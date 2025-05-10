@@ -13,4 +13,9 @@ module com.app.emolist {
 
     opens com.app.emolist to javafx.fxml;
     exports com.app.emolist;
+    exports com.app.emolist.Test;
+    exports com.app.emolist.GUI;
+    exports com.app.emolist.DataBase;
+    exports com.app.emolist.Controller;
+    opens com.app.emolist.Controller to javafx.fxml;
 }
