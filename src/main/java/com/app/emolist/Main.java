@@ -18,7 +18,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("To Do List");
 
-        // ========== 左側區塊 ==========345
+        // ========== 左側區塊 ==========
         TextField inputField = new TextField();
         inputField.setPromptText("輸入任務...");
         Button addButton = new Button("新增任務");
