@@ -4,6 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+
+
   <groupId>com.app</groupId>
   <artifactId>EmoList</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -14,6 +16,7 @@
 <junit.version>5.10.2</junit.version>  </properties>
 
   <dependencies>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -29,6 +32,7 @@
       <artifactId>javafx-web</artifactId>
       <version>21</version>
     </dependency>
+
       <dependency>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-swing</artifactId>
