@@ -1,4 +1,4 @@
-module com.example.test {
+module com.app.emolist {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -11,6 +11,6 @@ module com.example.test {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens app to javafx.fxml;
-    exports app;
+    opens com.app.emolist to javafx.fxml;
+    exports com.app.emolist;
 }
