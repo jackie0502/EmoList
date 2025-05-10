@@ -1,4 +1,4 @@
-package com.app.emolist;
+package com.app.emolist.Controller;
 
 import java.util.ArrayList;
 import java.util.List;
