@@ -1,4 +1,4 @@
-package app;
+package com.app.emolist;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

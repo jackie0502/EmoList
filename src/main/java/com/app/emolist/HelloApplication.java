@@ -1,4 +1,4 @@
-package app;
+package com.app.emolist;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
