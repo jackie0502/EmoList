@@ -18,6 +18,7 @@ public class TaskPanel {
     private VBox view;
 
     public TaskPanel() {
+        loadSavedTasks(); // <--- 加在 createView() 前
         view = createView();
     }
 
@@ -34,6 +35,13 @@ public class TaskPanel {
     private void handleExportTasks() {
         taskRepo.saveTasks(taskManager.getTasks());
         showAlert("任務已匯出到 tasks.json");
+    }
+
+    private void loadSavedTasks() {
+        for (Task task : taskRepo.loadTasks()) {
+            taskManager.addTask(task);
+            taskListView.getItems().add(task);
+        }
     }
 
     private VBox createView() {
