@@ -2,6 +2,7 @@ package com.app.emolist.GUI;
 
 import com.app.emolist.Controller.Task;
 import com.app.emolist.Controller.TaskManager;
+import com.app.emolist.DataBase.TaskRepository;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
@@ -28,18 +29,28 @@ public class TaskPanel {
         return view;
     }
 
+    private TaskRepository taskRepo = new TaskRepository(); // 若尚未宣告
+
+    private void handleExportTasks() {
+        taskRepo.saveTasks(taskManager.getTasks());
+        showAlert("任務已匯出到 tasks.json");
+    }
+
     private VBox createView() {
         inputField.setPromptText("輸入任務...");
         Button addButton = new Button("新增任務");
         Button completeButton = new Button("標記完成");
         Button deleteButton = new Button("刪除任務");
+        Button exportButton = new Button("匯出任務");
+
+        exportButton.setOnAction(e -> handleExportTasks());
 
         addButton.setOnAction(e -> handleAddTask());
         completeButton.setOnAction(e -> handleCompleteTask());
         deleteButton.setOnAction(e -> handleDeleteTask());
 
         HBox inputBox = new HBox(10, inputField, addButton);
-        HBox actionButtons = new HBox(10, completeButton, deleteButton);
+        HBox actionButtons = new HBox(10, completeButton, deleteButton, exportButton);
 
         VBox panel = new VBox(10, taskListView, inputBox, actionButtons);
         panel.setPadding(new Insets(15));
