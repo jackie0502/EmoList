@@ -19,7 +19,6 @@ public class TaskPanelController {
     @FXML private TextField inputField;
     @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
-    @FXML private TextField tagField;
     @FXML private CheckBox darkModeToggle;
 
     private TaskManager taskManager;
@@ -147,13 +146,18 @@ public class TaskPanelController {
         uncompletedListView.getItems().setAll(taskManager.getTasks().stream()
                 .filter(t -> !t.isCompleted()
                         && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
-                        && (query.isEmpty() || t.getTitle().toLowerCase().contains(query)))
+                        && (query.isEmpty() ||
+                        t.getTitle().toLowerCase().contains(query) ||
+                        t.getCategory().toLowerCase().contains(query)))
                 .toList());
+
 
         completedListView.getItems().setAll(taskManager.getTasks().stream()
                 .filter(t -> t.isCompleted()
                         && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
-                        && (query.isEmpty() || t.getTitle().toLowerCase().contains(query)))
+                        && (query.isEmpty() ||
+                        t.getTitle().toLowerCase().contains(query) ||
+                        t.getCategory().toLowerCase().contains(query)))
                 .toList());
     }
 
@@ -162,7 +166,9 @@ public class TaskPanelController {
         String title = inputField.getText().trim();
         if (!title.isEmpty()) {
             Task task = new Task(title, LocalDate.now());
-            task.setCategory(taskCategoryChoice.getValue() != null ? taskCategoryChoice.getValue() : "其他");
+            String category = taskCategoryChoice.getValue() != null ? taskCategoryChoice.getValue() : "其他";
+            task.setCategory(category);
+            task.setTags(category); // 標籤等於分類
             String priorityText = priorityChoice.getValue() != null ? priorityChoice.getValue() : "中";
             int priority = switch (priorityText) {
                 case "高" -> 3;
@@ -171,14 +177,13 @@ public class TaskPanelController {
             };
             task.setPriority(priority);
             task.setRecurrence(recurrenceChoice.getValue() != null ? recurrenceChoice.getValue() : "無");
-            task.setTags(tagField.getText());
             taskManager.addTask(task);
             inputField.clear();
-            tagField.clear();
             refreshTaskViews();
             updatePanels();
         }
     }
+
 
     @FXML
     private void handleDeleteTask() {
