@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.app.emolist.GUI.CalendarPanelController"
-            prefHeight="400.0" prefWidth="300.0">
-    <VBox spacing="10" fx:id="view"
-          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
-          styleClass="calendar-panel">
-        <Label fx:id="titleLabel" text="📅 萬年曆"/>
-        <!-- DatePicker 將由 Controller 用 skin 內嵌 -->
-        <DatePicker fx:id="calendar" visible="false"/>
-        <Label fx:id="selectedDateLabel" text="尚未選擇日期"/>
-    </VBox>
-</AnchorPane>
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.app.emolist.GUI.CalendarPanelController"
+      spacing="10" alignment="CENTER">
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="‹" onAction="#prevMonth"/>
+        <Label fx:id="monthLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+        <Button text="›" onAction="#nextMonth"/>
+    </HBox>
+
+    <GridPane fx:id="calendarGrid" hgap="5" vgap="5">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        <!-- 你的格子或其他元件 -->
+    </GridPane>
+</VBox>
