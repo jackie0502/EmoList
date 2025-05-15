@@ -7,12 +7,29 @@
 }
 
 /* 6: CalendarPanel 樣式 */
+/*.calendar-panel {
+    -fx-background-color: #e0f7fa;
+    -fx-padding: 15;
+    -fx-border-color: #00acc1;
+    -fx-border-radius: 8;
+}*/
 .calendar-panel {
     -fx-background-color: #e0f7fa;
     -fx-padding: 15;
     -fx-border-color: #00acc1;
     -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
+
+.root.dark-mode .calendar-panel {
+    -fx-background-color: #333333;
+    -fx-border-color: #555555;
+}
+
+.root.dark-mode .label {
+    -fx-text-fill: #ffffff;
+}
+
 
 /* 11: StatsPanel 樣式 */
 .stats-panel {
