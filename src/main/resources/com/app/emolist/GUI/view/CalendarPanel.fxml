@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.app.emolist.GUI.CalendarPanelController"
+            prefHeight="400.0" prefWidth="300.0">
+    <VBox spacing="10" fx:id="view"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+          styleClass="calendar-panel">
+        <Label fx:id="titleLabel" text="📅 萬年曆"/>
+        <!-- DatePicker 將由 Controller 用 skin 內嵌 -->
+        <DatePicker fx:id="calendar" visible="false"/>
+        <Label fx:id="selectedDateLabel" text="尚未選擇日期"/>
+    </VBox>
+</AnchorPane>

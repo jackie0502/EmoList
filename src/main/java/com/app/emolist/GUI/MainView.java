@@ -1,36 +1,65 @@
 package com.app.emolist.GUI;
 
+import com.app.emolist.Controller.TaskManager;
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import com.app.emolist.GUI.TaskPanel;
-import com.app.emolist.GUI.CalendarPanel;
-import com.app.emolist.GUI.StatsPanel;
 
 public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("To Do List");
-        // 初始化各面板
-        TaskPanel taskPanel = new TaskPanel();
-        CalendarPanel calendarPanel = new CalendarPanel(taskPanel);
-        taskPanel.setCalendarPanel(calendarPanel);
-        StatsPanel statsPanel = new StatsPanel(taskPanel.getTaskManager());
-        taskPanel.setStatsPanel(statsPanel);
+        try {
+            // 建立共享的 TaskManager
+            TaskManager sharedTaskManager = new TaskManager();
 
-        // 版面佈局：上方橫列（任務清單 + 行事曆），下方統計圖表
-        HBox topRow = new HBox(20, taskPanel.getView(), calendarPanel.getView());
-        VBox root = new VBox(10, topRow, statsPanel.getView());
-        root.setPadding(new javafx.geometry.Insets(10));
+            // 載入 TaskPanel.fxml 並取得 Controller
+            FXMLLoader taskLoader = new FXMLLoader(getClass().getResource("/com/app/emolist/GUI/view/TaskPanel.fxml"));
+            Parent taskPanel = taskLoader.load();
+            TaskPanelController taskController = taskLoader.getController();
+            taskController.setTaskManager(sharedTaskManager);
 
-        Scene scene = new Scene(root, 800, 700);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            // 載入 CalendarPanel.fxml 並取得 Controller
+            FXMLLoader calendarLoader = new FXMLLoader(getClass().getResource("/com/app/emolist/GUI/view/CalendarPanel.fxml"));
+            Parent calendarPanel = calendarLoader.load();
+            CalendarPanelController calendarController = calendarLoader.getController();
+            calendarController.setTaskManager(sharedTaskManager);
 
-        // 啟動後檢查是否有任務到期需要提醒
-        Platform.runLater(() -> taskPanel.checkDeadlines());
+            // 載入 StatsPanel.fxml 並取得 Controller
+            FXMLLoader statsLoader = new FXMLLoader(getClass().getResource("/com/app/emolist/GUI/view/StatsPanel.fxml"));
+            Parent statsPanel = statsLoader.load();
+            StatsPanelController statsController = statsLoader.getController();
+            statsController.setTaskManager(sharedTaskManager);
+
+            // 建立彼此注入
+            taskController.setCalendarController(calendarController);
+            taskController.setStatsController(statsController);
+
+            // 主畫面排版
+            HBox topRow = new HBox(20, taskPanel, calendarPanel);
+            VBox root = new VBox(10, topRow, statsPanel);
+            root.setPadding(new javafx.geometry.Insets(10));
+
+            Scene scene = new Scene(root, 1000, 700);
+            scene.getStylesheets().add(org.kordamp.bootstrapfx.BootstrapFX.bootstrapFXStylesheet());
+            scene.getStylesheets().add(getClass().getResource("/com/app/emolist/GUI/view/style.css").toExternalForm());
+
+            primaryStage.setTitle("EmoList - To Do List");
+            primaryStage.setScene(scene);
+            primaryStage.show();
+
+            // 啟動時檢查 Deadline
+            taskController.checkDeadlines();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
