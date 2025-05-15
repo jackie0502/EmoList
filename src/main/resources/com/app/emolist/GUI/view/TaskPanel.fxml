@@ -8,24 +8,37 @@
             fx:controller="com.app.emolist.GUI.TaskPanelController"
             prefHeight="600.0" prefWidth="400.0">
 
-    <VBox spacing="10" styleClass="task-panel" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
-        <TextField fx:id="searchField" promptText="搜尋任務..." />
-        <ListView fx:id="taskListView" />
+    <VBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+          styleClass="container mt-3">
+
+        <!-- 分頁分類 + 更多 -->
+        <HBox spacing="10" fx:id="categoryTabs" styleClass="btn-group" />
+        <ComboBox fx:id="categoryDropdown" promptText="更多分類..." visible="false" />
+
+        <TextField fx:id="searchField" promptText="搜尋任務..." styleClass="form-control"/>
+
+        <Label text="未完成任務" styleClass="h5" />
+        <ListView fx:id="uncompletedListView" styleClass="list-group" />
+
+        <Label text="已完成任務" styleClass="h5" />
+        <ListView fx:id="completedListView" styleClass="list-group" />
+
+        <TextField fx:id="inputField" promptText="輸入任務..." styleClass="form-control" />
+        <TextField fx:id="tagField" promptText="標籤（逗號分隔）" styleClass="form-control" />
+
+        <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
         <HBox spacing="10">
-            <TextField fx:id="inputField" promptText="輸入任務..." />
-            <Button text="新增任務" onAction="#handleAddTask" />
+            <ComboBox fx:id="priorityChoice" promptText="重要性" />
+            <ComboBox fx:id="recurrenceChoice" promptText="週期" />
         </HBox>
+
         <HBox spacing="10">
-            <ComboBox fx:id="categoryChoice" promptText="分類"/>
-            <ComboBox fx:id="priorityChoice" promptText="重要性"/>
-            <ComboBox fx:id="recurrenceChoice" promptText="週期"/>
+            <Button text="新增任務" onAction="#handleAddTask" styleClass="btn btn-success" />
+            <Button text="刪除任務" onAction="#handleDeleteTask" styleClass="btn btn-danger" />
+            <Button text="匯出任務" onAction="#handleExportTasks" styleClass="btn btn-info" />
         </HBox>
-        <TextField fx:id="tagField" promptText="標籤（逗號分隔）"/>
-        <HBox spacing="10">
-            <Button text="標記完成" onAction="#handleCompleteTask"/>
-            <Button text="刪除任務" onAction="#handleDeleteTask"/>
-            <Button text="匯出任務" onAction="#handleExportTasks"/>
-            <CheckBox fx:id="darkModeToggle" text="深色模式" onAction="#toggleDarkMode"/>
-        </HBox>
+
+        <CheckBox fx:id="darkModeToggle" text="深色模式" onAction="#toggleDarkMode" />
+
     </VBox>
 </AnchorPane>
