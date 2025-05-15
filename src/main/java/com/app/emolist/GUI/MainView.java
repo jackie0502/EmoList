@@ -44,6 +44,7 @@ public class MainView extends Application {
             root.setPadding(new javafx.geometry.Insets(10));
 
             Scene scene = new Scene(root, 1000, 700);
+            scene.getStylesheets().add(org.kordamp.bootstrapfx.BootstrapFX.bootstrapFXStylesheet());
             scene.getStylesheets().add(getClass().getResource("/com/app/emolist/GUI/view/style.css").toExternalForm());
 
             primaryStage.setTitle("EmoList - To Do List");
