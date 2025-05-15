@@ -42,11 +42,17 @@
             <ComboBox fx:id="recurrenceChoice" promptText="週期" />
         </HBox>
 
+<!--        <HBox spacing="10">-->
+<!--            <Button text="新增任務" onAction="#handleAddTask" />-->
+<!--            <Button text="刪除任務" onAction="#handleDeleteTask" />-->
+<!--            <Button text="匯出任務" onAction="#handleExportTasks" />-->
+<!--        </HBox>-->
         <HBox spacing="10">
-            <Button text="新增任務" onAction="#handleAddTask" />
-            <Button text="刪除任務" onAction="#handleDeleteTask" />
-            <Button text="匯出任務" onAction="#handleExportTasks" />
+            <Button text="新增任務" onAction="#handleAddTask" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button text="刪除任務" onAction="#handleDeleteTask" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button text="匯出任務" onAction="#handleExportTasks" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
         </HBox>
+
 
         <CheckBox fx:id="darkModeToggle" text="深色模式" onAction="#toggleDarkMode" />
 

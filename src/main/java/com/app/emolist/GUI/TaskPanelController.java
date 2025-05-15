@@ -39,6 +39,8 @@ public class TaskPanelController {
     private final ObservableList<String> allCategories = FXCollections.observableArrayList("無", "娛樂", "工作");
     private String currentCategoryFilter = "全部";
 
+
+
     @FXML
     private void initialize() {
         configureChoices();

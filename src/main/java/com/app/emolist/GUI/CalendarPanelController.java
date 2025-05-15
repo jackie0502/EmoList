@@ -3,106 +3,104 @@ package com.app.emolist.GUI;
 import com.app.emolist.Controller.Task;
 import com.app.emolist.Controller.TaskManager;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.skin.DatePickerSkin;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.Node;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CalendarPanelController {
-    @FXML private VBox view;
-    @FXML private Label titleLabel;
-    @FXML private DatePicker calendar;
-    @FXML private Label selectedDateLabel;
+    @FXML private GridPane calendarGrid;
+    @FXML private Label monthLabel;
 
+    private LocalDate currentMonth;
     private TaskManager taskManager;
 
     @FXML
     private void initialize() {
-        selectedDateLabel.setStyle("-fx-text-fill: #555;");
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-
-        // 使用 DatePickerSkin 讓日曆常駐
-        DatePickerSkin skin = new DatePickerSkin(calendar);
-        Node calendarContent = skin.getPopupContent();
-
-        view.getChildren().add(1, calendarContent); // 插入在 titleLabel 下方
-        configureDayCells();
-
-        calendar.setOnAction(e -> {
-            LocalDate date = calendar.getValue();
-            if (date != null) {
-                showTasksForDate(date);
-            } else {
-                selectedDateLabel.setText("尚未選擇日期");
-            }
-        });
+        currentMonth = LocalDate.now().withDayOfMonth(1);
     }
 
     public void setTaskManager(TaskManager manager) {
         this.taskManager = manager;
-        configureDayCells();
+        updateCalendar();
     }
 
+    public void updateCalendar() {
+        calendarGrid.getChildren().clear();
+        monthLabel.setText(currentMonth.format(DateTimeFormatter.ofPattern("yyyy年MM月")));
+
+        LocalDate firstDayOfMonth = currentMonth;
+        int firstDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue(); // 1=Monday
+        int daysInMonth = firstDayOfMonth.lengthOfMonth();
+
+        // 42格 = 6列7行
+        for (int i = 0; i < 42; i++) {
+            LocalDate cellDate = firstDayOfMonth.minusDays(firstDayOfWeek - 1).plusDays(i);
+            VBox dayBox = createDayBox(cellDate);
+            calendarGrid.add(dayBox, i % 7, i / 7);
+        }
+    }
+
+    private VBox createDayBox(LocalDate date) {
+        VBox box = new VBox();
+        box.setAlignment(Pos.TOP_LEFT);
+        box.setPadding(new Insets(5));
+        box.setPrefSize(100, 80);
+        box.getStyleClass().add("calendar-cell");
+
+        Label dateLabel = new Label(String.valueOf(date.getDayOfMonth()));
+        if (date.equals(LocalDate.now())) {
+            dateLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        }
+
+        long taskCount = taskManager.getTasks().stream()
+                .filter(task -> date.equals(task.getDeadline()))
+                .count();
+
+        Label taskLabel = new Label(taskCount > 0 ? taskCount + " 個任務" : "");
+        taskLabel.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
+
+        box.getChildren().addAll(dateLabel, taskLabel);
+
+        box.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showTasksForDate(date));
+
+        return box;
+    }
     public void refreshCalendarView() {
-        configureDayCells();
+        // 在這裡加上重新載入行事曆 UI 的邏輯
+        System.out.println("Calendar view refreshed.");
     }
-
-    private void configureDayCells() {
-        calendar.setDayCellFactory(picker -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                if (empty || date == null || taskManager == null) {
-                    setText(null);
-                    setStyle("");
-                    setTooltip(null);
-                } else {
-                    int count = 0;
-                    int pressure = 0;
-                    for (Task task : taskManager.getTasks()) {
-                        if (date.equals(task.getDeadline())) {
-                            count++;
-                            pressure += task.getPriority();
-                        }
-                    }
-
-                    setText(date.getDayOfMonth() + (count > 0 ? " (" + count + ")" : ""));
-                    if (count > 0) {
-                        Tooltip tooltip = new Tooltip("任務: " + count + " 個\n壓力指數: " + pressure);
-                        setTooltip(tooltip);
-
-                        if (pressure <= 3)
-                            setStyle("-fx-background-color: #c8e6c9;");
-                        else if (pressure <= 6)
-                            setStyle("-fx-background-color: #fff9c4;");
-                        else
-                            setStyle("-fx-background-color: #ffcdd2;");
-                    } else {
-                        setStyle("");
-                        setTooltip(null);
-                    }
-                }
-            }
-        });
-    }
-
     private void showTasksForDate(LocalDate date) {
-        if (taskManager == null) return;
-        int count = 0;
-        int pressure = 0;
-        for (Task task : taskManager.getTasks()) {
-            if (date.equals(task.getDeadline())) {
-                count++;
-                pressure += task.getPriority();
-            }
-        }
+        List<Task> tasksForDate = taskManager.getTasks().stream()
+                .filter(task -> date.equals(task.getDeadline()))
+                .collect(Collectors.toList());
 
-        if (count > 0) {
-            selectedDateLabel.setText("你選擇的日期是：" + date + "（" + count + " 個任務，壓力指數 " + pressure + "）");
-        } else {
-            selectedDateLabel.setText("你選擇的日期是：" + date + "（無任務）");
-        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("任務清單");
+        alert.setHeaderText(date.toString() + " 的任務");
+        String content = tasksForDate.isEmpty() ? "當日無任務" :
+                tasksForDate.stream().map(Task::getTitle).collect(Collectors.joining("\n"));
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void prevMonth() {
+        currentMonth = currentMonth.minusMonths(1);
+        updateCalendar();
+    }
+
+    @FXML
+    private void nextMonth() {
+        currentMonth = currentMonth.plusMonths(1);
+        updateCalendar();
     }
 }
