@@ -24,7 +24,7 @@
         <ListView fx:id="completedListView" styleClass="list-group" />
 
         <TextField fx:id="inputField" promptText="輸入任務..." styleClass="form-control" />
-        <TextField fx:id="tagField" promptText="標籤（逗號分隔）" styleClass="form-control" />
+
 
         <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
         <HBox spacing="10">
