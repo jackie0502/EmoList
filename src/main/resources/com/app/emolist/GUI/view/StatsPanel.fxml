@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.app.emolist.GUI.StatsPanelController"
+            prefHeight="300.0" prefWidth="800.0">
+
+    <HBox spacing="20" styleClass="stats-panel" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <PieChart fx:id="pieChart" prefWidth="300.0" prefHeight="300.0" />
+        <LineChart fx:id="lineChart" prefWidth="450.0" prefHeight="300.0">
+            <xAxis>
+                <CategoryAxis label="日期"/>
+            </xAxis>
+            <yAxis>
+                <NumberAxis label="壓力指數"/>
+            </yAxis>
+        </LineChart>
+    </HBox>
+</AnchorPane>

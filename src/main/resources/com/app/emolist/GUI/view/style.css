@@ -1,0 +1,72 @@
+/* 1: TaskPanel 樣式 */
+.task-panel {
+    -fx-background-color: #f4f4f4;
+    -fx-padding: 15;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 8;
+}
+
+/* 6: CalendarPanel 樣式 */
+.calendar-panel {
+    -fx-background-color: #e0f7fa;
+    -fx-padding: 15;
+    -fx-border-color: #00acc1;
+    -fx-border-radius: 8;
+}
+
+/* 11: StatsPanel 樣式 */
+.stats-panel {
+    -fx-background-color: #fce4ec;
+    -fx-padding: 15;
+    -fx-border-color: #ec407a;
+    -fx-border-radius: 8;
+}
+
+/* 16: ListView 任務卡片樣式 */
+.list-cell {
+    -fx-padding: 4;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4;
+    -fx-background-color: white;
+}
+
+.list-cell:selected {
+    -fx-background-color: #90caf9;
+    -fx-text-fill: black;
+}
+
+/* 23: 深色模式覆蓋 */
+.root.dark-mode .task-panel,
+.root.dark-mode .calendar-panel,
+.root.dark-mode .stats-panel {
+    -fx-background-color: #333333;
+    -fx-border-color: #555555;
+}
+
+.root.dark-mode .list-cell {
+    -fx-background-color: #444444;
+    -fx-border-color: #777777;
+    -fx-text-fill: white;
+}
+
+.root.dark-mode .list-cell:selected {
+    -fx-background-color: #666666;
+    -fx-text-fill: white;
+}
+
+/* 34: 按鈕 hover 效果 */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* 41: ComboBox 與 TextField */
+.combo-box, .text-field {
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+}
