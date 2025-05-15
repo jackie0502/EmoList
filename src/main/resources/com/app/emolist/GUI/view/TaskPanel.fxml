@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.app.emolist.GUI.TaskPanelController"
+            prefHeight="600.0" prefWidth="400.0">
+
+    <VBox spacing="10" styleClass="task-panel" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <TextField fx:id="searchField" promptText="搜尋任務..." />
+        <ListView fx:id="taskListView" />
+        <HBox spacing="10">
+            <TextField fx:id="inputField" promptText="輸入任務..." />
+            <Button text="新增任務" onAction="#handleAddTask" />
+        </HBox>
+        <HBox spacing="10">
+            <ComboBox fx:id="categoryChoice" promptText="分類"/>
+            <ComboBox fx:id="priorityChoice" promptText="重要性"/>
+            <ComboBox fx:id="recurrenceChoice" promptText="週期"/>
+        </HBox>
+        <TextField fx:id="tagField" promptText="標籤（逗號分隔）"/>
+        <HBox spacing="10">
+            <Button text="標記完成" onAction="#handleCompleteTask"/>
+            <Button text="刪除任務" onAction="#handleDeleteTask"/>
+            <Button text="匯出任務" onAction="#handleExportTasks"/>
+            <CheckBox fx:id="darkModeToggle" text="深色模式" onAction="#toggleDarkMode"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
