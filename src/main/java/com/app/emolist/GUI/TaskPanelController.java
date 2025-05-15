@@ -63,7 +63,7 @@ public class TaskPanelController {
 
     private void configureChoices() {
         taskCategoryChoice.setItems(allCategories);
-        taskCategoryChoice.getSelectionModel().select("工作");
+        taskCategoryChoice.getSelectionModel().select("無");
 
         priorityChoice.getItems().addAll("低", "中", "高");
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
@@ -138,7 +138,7 @@ public class TaskPanelController {
         List<String> overflowCategories = allCategories.size() > MAX_VISIBLE_TABS ? allCategories.subList(MAX_VISIBLE_TABS, allCategories.size()) : List.of();
 
         for (String category : visibleCategories) {
-            if (category.equals("無")) continue; // 不出現在分頁
+            if (category.equals("無")) continue;
             Button tabButton = createCategoryTabButton(category);
             categoryTabs.getChildren().add(tabButton);
         }
