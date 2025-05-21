@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.fxml.FXMLLoader?>
+
+<SplitPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.app.emolist.GUI.MainController" dividerPositions="0.6">
+
+    <items>
+        <AnchorPane>
+            <fx:include fx:id="taskPanel" source="TaskPanel.fxml"/>
+        </AnchorPane>
+        <AnchorPane>
+            <fx:include fx:id="calendarPanel" source="CalendarPanel.fxml"/>
+        </AnchorPane>
+    </items>
+</SplitPane>
