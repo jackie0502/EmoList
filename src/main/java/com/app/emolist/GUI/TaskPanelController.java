@@ -35,7 +35,7 @@ public class TaskPanelController {
     private CalendarPanelController calendarController;
     private StatsPanelController statsController;
 
-    private final int MAX_VISIBLE_TABS = 4;
+    private final int MAX_VISIBLE_TABS = 5;
     private final ObservableList<String> allCategories = FXCollections.observableArrayList("無", "娛樂", "工作");
     private String currentCategoryFilter = "全部";
 
@@ -109,14 +109,20 @@ public class TaskPanelController {
     @FXML
     private void handleConfirmAddCategory() {
         String newCategory = addCategoryField.getText().trim();
-        if (!newCategory.isEmpty() && !allCategories.contains(newCategory)) {
+        if (newCategory.isEmpty()) {
+            categoryMessage.setText("分類不能為空");
+        } else if (getVisualLength(newCategory) > 12) {
+            categoryMessage.setText("中/英 文需小於 6/12 字");
+        } else if (allCategories.contains(newCategory)) {
+            categoryMessage.setText("分類已存在");
+        } else {
             allCategories.add(newCategory);
             setupCategoryTabs();
             categoryMessage.setText("已新增分類：" + newCategory);
-        } else {
-            categoryMessage.setText("分類重複或無效");
+            addCategoryBox.setVisible(false);
         }
-        addCategoryBox.setVisible(false);
+
+
     }
 
     @FXML
@@ -186,6 +192,25 @@ public class TaskPanelController {
 
         return tabButton;
     }
+
+    private int getVisualLength(String s) {
+        int length = 0;
+        for (char c : s.toCharArray()) {
+            // 中文、日文、韓文、全形符號
+            if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HANGUL_SYLLABLES ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HIRAGANA ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.KATAKANA) {
+                length += 2;
+            } else {
+                length += 1;
+            }
+        }
+        return length;
+    }
+
 
     private void highlightSelectedTab(String selected) {
         categoryTabs.getChildren().forEach(node -> {
