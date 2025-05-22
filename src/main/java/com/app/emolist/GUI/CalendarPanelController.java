@@ -81,24 +81,21 @@ public class CalendarPanelController {
         }
 
         long taskCount = taskManager.getTasks().stream()
-                .filter(task -> date.equals(task.getDeadline()))
+                .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())  // 只算未完成
                 .count();
 
-        Label taskLabel = new Label(taskCount > 0 ? taskCount + " 個任務" : "");
+        Label taskLabel = new Label(taskCount > 0 ? taskCount + " 個未完成任務" : "");
         taskLabel.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
 
         box.getChildren().addAll(dateLabel, taskLabel);
 
         box.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->
-                // 刷新日曆
-                // 如果你有其他面板也要刷新，放在這裡呼叫
-                // 例如 statsController.updateCharts();
                 showTasksForDate(date, this::updateCalendar)
         );
 
-
         return box;
     }
+
     public void refreshCalendarView() {
         updateCalendar();  // 重新繪製日曆格子
         System.out.println("Calendar view refreshed.");
