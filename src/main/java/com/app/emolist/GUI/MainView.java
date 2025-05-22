@@ -35,20 +35,27 @@ public class MainView extends Application {
             statsController.setTaskManager(sharedTaskManager);
 
             // 建立彼此注入
+//            taskController.setCalendarController(calendarController);
+//            taskController.setStatsController(statsController);
+            // 建立彼此注入
             taskController.setCalendarController(calendarController);
+            calendarController.setTaskPanelController(taskController);
             taskController.setStatsController(statsController);
+
 
             // 主畫面排版
             HBox topRow = new HBox(20, taskPanel, calendarPanel);
             VBox root = new VBox(10, topRow, statsPanel);
             root.setPadding(new javafx.geometry.Insets(10));
 
-            Scene scene = new Scene(root, 1000, 700);
+            Scene scene = new Scene(root, 1200, 800);
             scene.getStylesheets().add(org.kordamp.bootstrapfx.BootstrapFX.bootstrapFXStylesheet());
             scene.getStylesheets().add(getClass().getResource("/com/app/emolist/GUI/view/style.css").toExternalForm());
 
             primaryStage.setTitle("EmoList - To Do List");
             primaryStage.setScene(scene);
+            primaryStage.setMinWidth(1200);
+            primaryStage.setMinHeight(600);
             primaryStage.show();
 
             // 啟動時檢查 Deadline

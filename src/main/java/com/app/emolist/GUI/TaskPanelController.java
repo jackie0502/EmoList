@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import java.time.LocalDate;
 import java.util.List;
+
 
 public class TaskPanelController {
     @FXML private HBox categoryTabs;
@@ -27,6 +29,7 @@ public class TaskPanelController {
     @FXML private ComboBox<String> recurrenceChoice;
     @FXML private CheckBox darkModeToggle;
     @FXML private Region categorySpacer;
+    @FXML private VBox taskInputBox;
 
     private TaskManager taskManager;
     private final TaskRepository taskRepo = new TaskRepository();
@@ -35,7 +38,7 @@ public class TaskPanelController {
     private CalendarPanelController calendarController;
     private StatsPanelController statsController;
 
-    private final int MAX_VISIBLE_TABS = 4;
+    private final int MAX_VISIBLE_TABS = 5;
     private final ObservableList<String> allCategories = FXCollections.observableArrayList("無", "娛樂", "工作");
     private String currentCategoryFilter = "全部";
 
@@ -109,14 +112,20 @@ public class TaskPanelController {
     @FXML
     private void handleConfirmAddCategory() {
         String newCategory = addCategoryField.getText().trim();
-        if (!newCategory.isEmpty() && !allCategories.contains(newCategory)) {
+        if (newCategory.isEmpty()) {
+            categoryMessage.setText("分類不能為空");
+        } else if (getVisualLength(newCategory) > 12) {
+            categoryMessage.setText("中/英 文需小於 6/12 字");
+        } else if (allCategories.contains(newCategory)) {
+            categoryMessage.setText("分類已存在");
+        } else {
             allCategories.add(newCategory);
             setupCategoryTabs();
             categoryMessage.setText("已新增分類：" + newCategory);
-        } else {
-            categoryMessage.setText("分類重複或無效");
+            addCategoryBox.setVisible(false);
         }
-        addCategoryBox.setVisible(false);
+
+
     }
 
     @FXML
@@ -187,6 +196,25 @@ public class TaskPanelController {
         return tabButton;
     }
 
+    private int getVisualLength(String s) {
+        int length = 0;
+        for (char c : s.toCharArray()) {
+            // 中文、日文、韓文、全形符號
+            if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HANGUL_SYLLABLES ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HIRAGANA ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.KATAKANA) {
+                length += 2;
+            } else {
+                length += 1;
+            }
+        }
+        return length;
+    }
+
+
     private void highlightSelectedTab(String selected) {
         categoryTabs.getChildren().forEach(node -> {
             if (node instanceof Button button) {
@@ -199,7 +227,7 @@ public class TaskPanelController {
         });
     }
 
-    private void refreshTaskViews() {
+    void refreshTaskViews() {
         String query = searchField.getText().trim().toLowerCase();
 
         uncompletedListView.getItems().setAll(taskManager.getTasks().stream()
@@ -250,6 +278,23 @@ public class TaskPanelController {
             updatePanels();
         }
     }
+
+    @FXML
+    private void handleShowTaskInput() {
+        taskInputBox.setVisible(true);
+        taskInputBox.setManaged(true);
+        inputField.clear();
+        taskCategoryChoice.getSelectionModel().select("無");
+        priorityChoice.getSelectionModel().select("中");
+        recurrenceChoice.getSelectionModel().select("無");
+    }
+
+    @FXML
+    private void handleCancelAddTask() {
+        taskInputBox.setVisible(false);
+        taskInputBox.setManaged(false);
+    }
+
 
     public void checkDeadlines() {
         LocalDate today = LocalDate.now();
