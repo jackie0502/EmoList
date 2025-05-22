@@ -80,7 +80,7 @@ public class CalendarPanelController {
             dateLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         }
 
-        long taskCount = taskManager.getTasks().stream()
+        long taskCount = taskManager.getAllTasks().stream()
                 .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())  // 只算未完成
                 .count();
 
@@ -102,7 +102,7 @@ public class CalendarPanelController {
     }
 
     private void showTasksForDate(LocalDate date, Runnable refreshCallback) {
-        List<Task> tasksForDate = taskManager.getTasks().stream()
+        List<Task> tasksForDate = taskManager.getAllTasks().stream()
                 .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())
                 .collect(Collectors.toList());
 
@@ -158,14 +158,12 @@ public class CalendarPanelController {
                     }
                 }
 
-                // 修改任務狀態後，呼叫 TaskPanelController 的 refresh 方法
-                taskPanelController.refreshTaskViews();
+                // 確保同步儲存到 JSON
+                taskManager.saveAll();
 
-                // 呼叫刷新callback
-                if (refreshCallback != null) {
-                    refreshCallback.run(); // 會同時更新日曆跟任務面板
-                }
-
+                // 刷新任務面板與日曆
+                if (taskPanelController != null) taskPanelController.refreshTaskViews();
+                if (refreshCallback != null) refreshCallback.run();
                 taskWindow.close();
             });
 

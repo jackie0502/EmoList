@@ -230,13 +230,13 @@ public class TaskPanelController {
     void refreshTaskViews() {
         String query = searchField.getText().trim().toLowerCase();
 
-        uncompletedListView.getItems().setAll(taskManager.getTasks().stream()
+        uncompletedListView.getItems().setAll(taskManager.getAllTasks().stream()
                 .filter(t -> !t.isCompleted()
                         && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
                         && (query.isEmpty() || t.getTitle().toLowerCase().contains(query) || t.getCategory().toLowerCase().contains(query)))
                 .toList());
 
-        completedListView.getItems().setAll(taskManager.getTasks().stream()
+        completedListView.getItems().setAll(taskManager.getAllTasks().stream()
                 .filter(t -> t.isCompleted()
                         && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
                         && (query.isEmpty() || t.getTitle().toLowerCase().contains(query) || t.getCategory().toLowerCase().contains(query)))
@@ -273,7 +273,7 @@ public class TaskPanelController {
             selected = completedListView.getSelectionModel().getSelectedItem();
         }
         if (selected != null) {
-            taskManager.getTasks().remove(selected);
+            taskManager.getAllTasks().remove(selected);
             refreshTaskViews();
             updatePanels();
         }
@@ -299,7 +299,7 @@ public class TaskPanelController {
     public void checkDeadlines() {
         LocalDate today = LocalDate.now();
         StringBuilder overdueList = new StringBuilder();
-        for (Task task : taskManager.getTasks()) {
+        for (Task task : taskManager.getAllTasks()) {
             if (!task.isCompleted() && (task.getDeadline().isBefore(today) || task.getDeadline().equals(today))) {
                 String status = task.getDeadline().isBefore(today) ? "（已過期）" : "（今天截止）";
                 overdueList.append(task.toString()).append(status).append("\n");
@@ -312,7 +312,7 @@ public class TaskPanelController {
 
     @FXML
     private void handleExportTasks() {
-        taskRepo.saveTasks(taskManager.getTasks());
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
     @FXML
