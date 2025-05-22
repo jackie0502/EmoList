@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -16,9 +17,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
+import javafx.stage.Modality;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+
 
 
 public class CalendarPanelController {
+
     @FXML private GridPane calendarGrid;
     @FXML private Label monthLabel;
 
@@ -28,7 +37,15 @@ public class CalendarPanelController {
     @FXML
     private void initialize() {
         currentMonth = LocalDate.now().withDayOfMonth(1);
+//        CalendarPanelController.setTaskPanelController(taskPanelController);
     }
+
+    public TaskPanelController taskPanelController;
+    // CalendarPanelController 裡的設定方法
+    public void setTaskPanelController(TaskPanelController controller) {
+        this.taskPanelController = controller;
+    }
+
 
     public void setTaskManager(TaskManager manager) {
         this.taskManager = manager;
@@ -72,29 +89,91 @@ public class CalendarPanelController {
 
         box.getChildren().addAll(dateLabel, taskLabel);
 
-        box.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showTasksForDate(date));
+        box.addEventHandler(MouseEvent.MOUSE_CLICKED, e ->
+                // 刷新日曆
+                // 如果你有其他面板也要刷新，放在這裡呼叫
+                // 例如 statsController.updateCharts();
+                showTasksForDate(date, this::updateCalendar)
+        );
+
 
         return box;
     }
     public void refreshCalendarView() {
-        // 在這裡加上重新載入行事曆 UI 的邏輯
+        updateCalendar();  // 重新繪製日曆格子
         System.out.println("Calendar view refreshed.");
     }
 
-    private void showTasksForDate(LocalDate date) {
+    private void showTasksForDate(LocalDate date, Runnable refreshCallback) {
         List<Task> tasksForDate = taskManager.getTasks().stream()
                 .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())
                 .collect(Collectors.toList());
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("任務清單");
-        alert.setHeaderText(date.toString() + " 的未完成任務");
-        String content = tasksForDate.isEmpty()
-                ? "當日無未完成任務"
-                : "未完成任務 : \n" + tasksForDate.stream().map(Task::getTitle).collect(Collectors.joining("\n"));
-        alert.setContentText(content);
-        alert.showAndWait();
+        Stage taskWindow = new Stage();
+        taskWindow.setTitle(date + " 的未完成任務");
+
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(15));
+        root.getStyleClass().add("container");
+
+        Label headerLabel = new Label("📅 " + date + " 的未完成任務");
+        headerLabel.getStyleClass().addAll("h4", "mb-3");
+        root.getChildren().add(headerLabel);
+
+        if (tasksForDate.isEmpty()) {
+            Label emptyLabel = new Label("📭 當日無未完成任務");
+            emptyLabel.getStyleClass().addAll("text-muted", "lead");
+            root.getChildren().add(emptyLabel);
+        } else {
+            // 存放所有checkbox，方便完成時統一處理
+            List<CheckBox> checkBoxes = new java.util.ArrayList<>();
+
+            for (Task task : tasksForDate) {
+                CheckBox checkBox = new CheckBox(task.getTitle());
+                checkBox.getStyleClass().add("form-check-input");
+                checkBoxes.add(checkBox);
+                root.getChildren().add(checkBox);
+            }
+
+            // 新增一個按鈕區塊
+            javafx.scene.layout.HBox buttonBox = new javafx.scene.layout.HBox();
+            buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
+            buttonBox.setPadding(new Insets(10, 0, 0, 0));
+
+            javafx.scene.control.Button completeBtn = new javafx.scene.control.Button("完成並關閉");
+            completeBtn.setOnAction(e -> {
+                // 把勾選的任務標記完成
+                for (int i = 0; i < checkBoxes.size(); i++) {
+                    CheckBox cb = checkBoxes.get(i);
+                    if (cb.isSelected()) {
+                        tasksForDate.get(i).setCompleted(true);
+                    }
+                }
+
+                // 修改任務狀態後，呼叫 TaskPanelController 的 refresh 方法
+                taskPanelController.refreshTaskViews();
+
+                // 呼叫刷新callback
+                if (refreshCallback != null) {
+                    refreshCallback.run(); // 會同時更新日曆跟任務面板
+                }
+
+                taskWindow.close();
+            });
+
+            buttonBox.getChildren().add(completeBtn);
+            root.getChildren().add(buttonBox);
+        }
+
+        Scene scene = new Scene(root, 400, 300);
+//    scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
+        taskWindow.setScene(scene);
+        taskWindow.initModality(Modality.APPLICATION_MODAL);
+        taskWindow.show();
     }
+
+
+
 
 
     @FXML
