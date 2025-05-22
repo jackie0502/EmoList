@@ -122,15 +122,26 @@ public class CalendarPanelController {
             emptyLabel.getStyleClass().addAll("text-muted", "lead");
             root.getChildren().add(emptyLabel);
         } else {
+            // 放任務CheckBox的容器
+            VBox taskListBox = new VBox(5);
+
             // 存放所有checkbox，方便完成時統一處理
             List<CheckBox> checkBoxes = new java.util.ArrayList<>();
 
             for (Task task : tasksForDate) {
-                CheckBox checkBox = new CheckBox(task.getTitle());
+                // 顯示標題加上類別名稱（假設task.getCategory()回傳類別名稱）
+                String titleWithCategory = task.getTitle() + " [" + task.getCategory() + "]";
+                CheckBox checkBox = new CheckBox(titleWithCategory);
                 checkBox.getStyleClass().add("form-check-input");
                 checkBoxes.add(checkBox);
-                root.getChildren().add(checkBox);
+                taskListBox.getChildren().add(checkBox);
             }
+
+            // 加入 ScrollPane 使任務列表可滾動，設定最大高度限制
+            javafx.scene.control.ScrollPane scrollPane = new javafx.scene.control.ScrollPane(taskListBox);
+            scrollPane.setFitToWidth(true);
+            scrollPane.setPrefHeight(200);  // 你可以調整這個高度限制
+            root.getChildren().add(scrollPane);
 
             // 新增一個按鈕區塊
             javafx.scene.layout.HBox buttonBox = new javafx.scene.layout.HBox();
@@ -163,11 +174,11 @@ public class CalendarPanelController {
         }
 
         Scene scene = new Scene(root, 400, 300);
-//    scene.getStylesheets().add("org/kordamp/bootstrapfx/bootstrapfx.css");
         taskWindow.setScene(scene);
         taskWindow.initModality(Modality.APPLICATION_MODAL);
         taskWindow.show();
     }
+
 
 
 
