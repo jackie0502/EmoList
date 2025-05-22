@@ -6,11 +6,11 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.app.emolist.GUI.TaskPanelController"
-            prefHeight="900.0" prefWidth="600.0">
+            prefHeight="600.0" prefWidth="400.0">
 
     <VBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
-        <!-- 分類分頁區（動態由 Controller 建立） -->
+        <!-- 分類分頁區 -->
         <HBox spacing="10">
             <HBox spacing="10" fx:id="categoryTabs" />
             <Region fx:id="categorySpacer" HBox.hgrow="ALWAYS" />
@@ -18,12 +18,12 @@
             <Button text="＋新增分類" onAction="#handleShowAddCategory" />
         </HBox>
 
-        <!-- 浮動新增分類 -->
-        <HBox spacing="10" fx:id="addCategoryBox" visible="false">
+        <!-- 浮動新增分類區 -->
+        <HBox spacing="10" fx:id="addCategoryBox" visible="false" managed="false">
             <TextField fx:id="addCategoryField" promptText="輸入新分類..." />
             <Button text="確認" onAction="#handleConfirmAddCategory" />
             <Button text="取消" onAction="#handleCancelAddCategory" />
-            <Label fx:id="categoryMessage" textFill="red"/>
+            <Label fx:id="categoryMessage" textFill="red" />
         </HBox>
 
         <TextField fx:id="searchField" promptText="搜尋任務..." />
@@ -34,25 +34,26 @@
         <Label text="已完成任務" />
         <ListView fx:id="completedListView" />
 
-        <TextField fx:id="inputField" promptText="輸入任務..." />
-
+        <!-- 新增任務按鈕 -->
         <HBox spacing="10">
-            <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
-            <ComboBox fx:id="priorityChoice" promptText="重要性" />
-            <ComboBox fx:id="recurrenceChoice" promptText="週期" />
+            <Button text="＋新增任務" onAction="#handleShowTaskInput" />
+            <Button text="刪除任務" onAction="#handleDeleteTask" />
+            <Button text="匯出任務" onAction="#handleExportTasks" />
         </HBox>
 
-<!--        <HBox spacing="10">-->
-<!--            <Button text="新增任務" onAction="#handleAddTask" />-->
-<!--            <Button text="刪除任務" onAction="#handleDeleteTask" />-->
-<!--            <Button text="匯出任務" onAction="#handleExportTasks" />-->
-<!--        </HBox>-->
-        <HBox spacing="10">
-            <Button text="新增任務" onAction="#handleAddTask" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-            <Button text="刪除任務" onAction="#handleDeleteTask" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-            <Button text="匯出任務" onAction="#handleExportTasks" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
-        </HBox>
-
+        <!-- 浮動新增任務區 -->
+        <VBox spacing="10" fx:id="taskInputBox" visible="false" managed="false">
+            <TextField fx:id="inputField" promptText="輸入任務..." />
+            <HBox spacing="10">
+                <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
+                <ComboBox fx:id="priorityChoice" promptText="重要性" />
+                <ComboBox fx:id="recurrenceChoice" promptText="週期" />
+            </HBox>
+            <HBox spacing="10">
+                <Button text="確認新增" onAction="#handleAddTask" />
+                <Button text="取消" onAction="#handleCancelAddTask" />
+            </HBox>
+        </VBox>
 
         <CheckBox fx:id="darkModeToggle" text="深色模式" onAction="#toggleDarkMode" />
 

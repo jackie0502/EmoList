@@ -9,8 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import java.time.LocalDate;
 import java.util.List;
+
 
 public class TaskPanelController {
     @FXML private HBox categoryTabs;
@@ -27,6 +29,7 @@ public class TaskPanelController {
     @FXML private ComboBox<String> recurrenceChoice;
     @FXML private CheckBox darkModeToggle;
     @FXML private Region categorySpacer;
+    @FXML private VBox taskInputBox;
 
     private TaskManager taskManager;
     private final TaskRepository taskRepo = new TaskRepository();
@@ -275,6 +278,23 @@ public class TaskPanelController {
             updatePanels();
         }
     }
+
+    @FXML
+    private void handleShowTaskInput() {
+        taskInputBox.setVisible(true);
+        taskInputBox.setManaged(true);
+        inputField.clear();
+        taskCategoryChoice.getSelectionModel().select("無");
+        priorityChoice.getSelectionModel().select("中");
+        recurrenceChoice.getSelectionModel().select("無");
+    }
+
+    @FXML
+    private void handleCancelAddTask() {
+        taskInputBox.setVisible(false);
+        taskInputBox.setManaged(false);
+    }
+
 
     public void checkDeadlines() {
         LocalDate today = LocalDate.now();
