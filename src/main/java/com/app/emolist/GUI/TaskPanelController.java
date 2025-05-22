@@ -246,9 +246,13 @@ public class TaskPanelController {
 
     @FXML
     private void handleAddTask() {
+
         String title = inputField.getText().trim();
         if (!title.isEmpty()) {
-            Task task = new Task(title, LocalDate.now());
+//            Task task = new Task(title, LocalDate.now());
+            LocalDate deadline = deadlinePicker.getValue() != null ? deadlinePicker.getValue() : LocalDate.now();
+            Task task = new Task(title, deadline);
+
             String category = taskCategoryChoice.getValue() != null ? taskCategoryChoice.getValue() : "其他";
             task.setCategory(category);
             task.setTags(category);
@@ -329,6 +333,9 @@ public class TaskPanelController {
         uncompletedListView.refresh();
         completedListView.refresh();
     }
+
+    @FXML private DatePicker deadlinePicker;
+
 
     private void updatePanels() {
         if (statsController != null) statsController.updateCharts();
