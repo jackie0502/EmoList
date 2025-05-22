@@ -11,20 +11,21 @@
     <VBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
         <!-- 分類分頁區 -->
-        <HBox spacing="10">
-            <HBox spacing="10" fx:id="categoryTabs" />
-            <Region fx:id="categorySpacer" HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="categoryDropdown" promptText="更多分類..." visible="false" />
-            <Button text="＋新增分類" onAction="#handleShowAddCategory" />
-        </HBox>
-
-        <!-- 浮動新增分類區 -->
-        <HBox spacing="10" fx:id="addCategoryBox" visible="false" managed="false">
-            <TextField fx:id="addCategoryField" promptText="輸入新分類..." />
-            <Button text="確認" onAction="#handleConfirmAddCategory" />
-            <Button text="取消" onAction="#handleCancelAddCategory" />
-            <Label fx:id="categoryMessage" textFill="red" />
-        </HBox>
+        <VBox spacing="10">
+            <HBox spacing="10">
+                <HBox spacing="10" fx:id="categoryTabs" />
+                <Region fx:id="categorySpacer" HBox.hgrow="ALWAYS" />
+                <ComboBox fx:id="categoryDropdown" promptText="更多分類..." visible="false" />
+                <Button text="＋新增分類" onAction="#handleShowAddCategory" />
+            </HBox>
+            <!-- 浮動新增分類區 -->
+            <HBox spacing="10" fx:id="addCategoryBox" visible="false" managed="false">
+                <TextField fx:id="addCategoryField" promptText="輸入新分類..." />
+                <Button text="確認" onAction="#handleConfirmAddCategory" />
+                <Button text="取消" onAction="#handleCancelAddCategory" />
+                <Label fx:id="categoryMessage" textFill="red" />
+            </HBox>
+        </VBox>
 
         <TextField fx:id="searchField" promptText="搜尋任務..." />
 
