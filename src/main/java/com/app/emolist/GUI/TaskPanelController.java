@@ -227,7 +227,7 @@ public class TaskPanelController {
         });
     }
 
-    private void refreshTaskViews() {
+    void refreshTaskViews() {
         String query = searchField.getText().trim().toLowerCase();
 
         uncompletedListView.getItems().setAll(taskManager.getTasks().stream()
