@@ -5,7 +5,7 @@
     -fx-border-color: #ccc;
     -fx-border-radius: 8;
 }
-.calendar-cell {
+/*.calendar-cell {
     -fx-border-color: #ccc;
     -fx-background-color: #fefefe;
     -fx-border-radius: 5;
@@ -15,7 +15,7 @@
 
 .calendar-cell:hover {
     -fx-background-color: #d0e7ff;
-}
+}*/
 
 /* 6: CalendarPanel 樣式 */
 /*.calendar-panel {
@@ -24,6 +24,97 @@
     -fx-border-color: #00acc1;
     -fx-border-radius: 8;
 }*/
+/* calendar-task-dialog.css */
+
+.container {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.3, 0, 4);
+}
+
+.h4 {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+}
+
+.mb-3 {
+    -fx-margin-bottom: 12;
+}
+
+.text-muted {
+    -fx-text-fill: #9E9E9E;
+}
+
+.lead {
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+}
+
+.form-check-input {
+    -fx-font-size: 14px;
+    -fx-text-fill: #424242;
+}
+
+.button-primary {
+    -fx-background-color: #03A9F4;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-font-size: 14;
+}
+.button-primary:hover {
+    -fx-background-color: #0288D1;
+}
+
+/* calendar.css */
+.calendar-cell {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e0e0e0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 2, 2);
+}
+
+.calendar-cell:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.date-label {
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.date-label.today {
+    -fx-background-color: #ff5252;
+    -fx-text-fill: white;
+    -fx-padding: 2 6 2 6;
+    -fx-background-radius: 5;
+}
+
+.header-month {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-text-fill: #424242;
+}
+
+.btn-complete {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 5;
+    -fx-font-size: 14;
+}
+
+.btn-complete:hover {
+    -fx-background-color: #1976D2;
+}
+
 .calendar-panel {
     -fx-background-color: #e0f7fa;
     -fx-padding: 15;
