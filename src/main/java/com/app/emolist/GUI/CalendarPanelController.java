@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
+import javafx.scene.layout.Region;
+
 
 public class CalendarPanelController {
     @FXML private GridPane calendarGrid;
@@ -78,19 +80,22 @@ public class CalendarPanelController {
         // 在這裡加上重新載入行事曆 UI 的邏輯
         System.out.println("Calendar view refreshed.");
     }
+
     private void showTasksForDate(LocalDate date) {
         List<Task> tasksForDate = taskManager.getTasks().stream()
-                .filter(task -> date.equals(task.getDeadline()))
+                .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())
                 .collect(Collectors.toList());
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("任務清單");
-        alert.setHeaderText(date.toString() + " 的任務");
-        String content = tasksForDate.isEmpty() ? "當日無任務" :
-                tasksForDate.stream().map(Task::getTitle).collect(Collectors.joining("\n"));
+        alert.setHeaderText(date.toString() + " 的未完成任務");
+        String content = tasksForDate.isEmpty()
+                ? "當日無未完成任務"
+                : "未完成任務 : \n" + tasksForDate.stream().map(Task::getTitle).collect(Collectors.joining("\n"));
         alert.setContentText(content);
         alert.showAndWait();
     }
+
 
     @FXML
     private void prevMonth() {
