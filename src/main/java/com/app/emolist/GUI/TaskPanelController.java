@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import java.time.LocalDate;
 import java.util.List;
 
-
 public class TaskPanelController {
     @FXML private HBox categoryTabs;
     @FXML private ComboBox<String> categoryDropdown;

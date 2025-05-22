@@ -7,13 +7,10 @@ import java.util.List;
 public class TaskManager {
     private List<Task> taskList;
 
-    public TaskManager() {
-        taskList = TaskRepository.loadTasks();
+    public TaskManager() {taskList = TaskRepository.loadTasks();
     }
 
-    public List<Task> getAllTasks() {
-        return taskList;
-    }
+    public List<Task> getAllTasks() {return taskList;}
 
     public void addTask(Task task) {
         taskList.add(task);

@@ -24,8 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 
-
-
 public class CalendarPanelController {
 
     @FXML private GridPane calendarGrid;
