@@ -35,8 +35,13 @@ public class MainView extends Application {
             statsController.setTaskManager(sharedTaskManager);
 
             // 建立彼此注入
+//            taskController.setCalendarController(calendarController);
+//            taskController.setStatsController(statsController);
+            // 建立彼此注入
             taskController.setCalendarController(calendarController);
+            calendarController.setTaskPanelController(taskController);
             taskController.setStatsController(statsController);
+
 
             // 主畫面排版
             HBox topRow = new HBox(20, taskPanel, calendarPanel);
