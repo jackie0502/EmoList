@@ -7,9 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -105,6 +103,7 @@ public class TaskPanelController {
     @FXML
     private void handleShowAddCategory() {
         addCategoryBox.setVisible(true);
+        addCategoryBox.setManaged(true);
         addCategoryField.clear();
         categoryMessage.setText("");
     }
@@ -123,6 +122,7 @@ public class TaskPanelController {
             setupCategoryTabs();
             categoryMessage.setText("已新增分類：" + newCategory);
             addCategoryBox.setVisible(false);
+            addCategoryBox.setManaged(false);
         }
 
 
@@ -131,6 +131,7 @@ public class TaskPanelController {
     @FXML
     private void handleCancelAddCategory() {
         addCategoryBox.setVisible(false);
+        addCategoryBox.setManaged(false);
         categoryMessage.setText("");
     }
     private void setupCategoryTabs() {
