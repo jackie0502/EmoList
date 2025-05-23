@@ -35,7 +35,7 @@ public class StatsPanelController {
     public void updateCharts() {
         if (taskManager == null) return;
 
-        List<Task> tasks = taskManager.getTasks();
+        List<Task> tasks = taskManager.getAllTasks();
         int total = tasks.size();
         int completedCount = (int) tasks.stream().filter(Task::isCompleted).count();
         int incompleteCount = total - completedCount;
