@@ -10,11 +10,12 @@ module com.app.emolist {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires com.google.gson;
 
     // 開放 GUI 和 Controller 給 javafx.fxml 反射使用
     opens com.app.emolist to javafx.fxml;
     opens com.app.emolist.GUI to javafx.fxml;
-    opens com.app.emolist.Controller to javafx.fxml;
+    opens com.app.emolist.Controller to javafx.fxml,com.google.gson;
 
     // 輸出模組
     exports com.app.emolist;
