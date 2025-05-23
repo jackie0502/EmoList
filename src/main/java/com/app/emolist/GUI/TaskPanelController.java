@@ -3,15 +3,16 @@ package com.app.emolist.GUI;
 import com.app.emolist.Controller.Task;
 import com.app.emolist.Controller.TaskManager;
 import com.app.emolist.DataBase.TaskRepository;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import com.app.emolist.GUI.TaskPanel.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import java.time.LocalDate;
-import java.util.List;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 public class TaskPanelController {
+
     @FXML private HBox categoryTabs;
     @FXML private ComboBox<String> categoryDropdown;
     @FXML private HBox addCategoryBox;
@@ -28,103 +29,81 @@ public class TaskPanelController {
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
 
-    private TaskManager taskManager;
+    private final TaskManager taskManager = new TaskManager();
     private final TaskRepository taskRepo = new TaskRepository();
-    private boolean darkMode = false;
 
-    private CalendarPanelController calendarController;
-    private StatsPanelController statsController;
-
-    private final int MAX_VISIBLE_TABS = 5;
-    private final ObservableList<String> allCategories = FXCollections.observableArrayList("無", "娛樂", "工作");
     private String currentCategoryFilter = "全部";
 
+    // 子模組
+    private final CategoryHelper categoryHelper = new CategoryHelper(this);
+    private final TaskInputHelper taskInputHelper = new TaskInputHelper(this);
+    private final TaskViewHelper taskViewHelper = new TaskViewHelper(this);
+    private final DeadlineHelper deadlineHelper = new DeadlineHelper(this);
+    private CalendarPanelController calendarController;
+    private StatsPanelController statsController;
 
 
     @FXML
     private void initialize() {
-        configureChoices();
-        configureListViews();
-        setupCategoryTabs();
-        searchField.setOnKeyReleased(e -> refreshTaskViews());
-        categoryMessage.setText("");
-    }
-
-    public void setTaskManager(TaskManager manager) {
-        this.taskManager = manager;
-        refreshTaskViews();
-    }
-
-    public void setCalendarController(CalendarPanelController controller) {
-        this.calendarController = controller;
-    }
-
-    public void setStatsController(StatsPanelController controller) {
-        this.statsController = controller;
-    }
-
-    private void configureChoices() {
-        taskCategoryChoice.setItems(allCategories);
+        taskCategoryChoice.getItems().addAll("工作", "娛樂", "無");
         taskCategoryChoice.getSelectionModel().select("無");
-
         priorityChoice.getItems().addAll("低", "中", "高");
+        priorityChoice.getSelectionModel().select("中");
+
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
+        recurrenceChoice.getSelectionModel().select("無");
+
+
+        categoryHelper.refreshCategoryTabs();
+        taskInputHelper.hideTaskInputBox();
+        taskViewHelper.setupListViews();
     }
 
-    private void configureListViews() {
-        uncompletedListView.setCellFactory(list -> createTaskCell());
-        completedListView.setCellFactory(list -> createTaskCell());
-    }
+    // 👇 提供給子模組呼叫的橋接方法們
 
-    private ListCell<Task> createTaskCell() {
-        return new ListCell<>() {
-            @Override
-            protected void updateItem(Task task, boolean empty) {
-                super.updateItem(task, empty);
-                if (empty || task == null) {
-                    setGraphic(null);
-                } else {
-                    CheckBox checkBox = new CheckBox(task.getTitle() + (task.getDeadline() != null ? " (" + task.getDeadline() + ")" : ""));
-                    checkBox.setSelected(task.isCompleted());
-
-                    checkBox.setOnAction(e -> {
-                        task.setCompleted(checkBox.isSelected());
-                        refreshTaskViews();
-                        updatePanels();
-                    });
-
-                    setGraphic(checkBox);
-                }
-            }
-        };
-    }
-
-    @FXML
-    private void handleShowAddCategory() {
+    public void showAddCategoryInput() {
         addCategoryBox.setVisible(true);
         addCategoryBox.setManaged(true);
         addCategoryField.clear();
         categoryMessage.setText("");
     }
 
+    public void setTaskManager(TaskManager taskManager) {
+        this.taskManager.getAllTasks().clear();
+        this.taskManager.getAllTasks().addAll(taskManager.getAllTasks());
+    }
+
+    public void setCalendarController(CalendarPanelController calendarController) {
+        this.calendarController = calendarController;
+    }
+
+    public void setStatsController(StatsPanelController statsController) {
+        this.statsController = statsController;
+    }
+
+    @FXML
+    private void handleShowAddCategory() {
+        showAddCategoryInput(); // 或直接在這裡顯示分類輸入欄位
+    }
+
+
+
     @FXML
     private void handleConfirmAddCategory() {
         String newCategory = addCategoryField.getText().trim();
         if (newCategory.isEmpty()) {
             categoryMessage.setText("分類不能為空");
-        } else if (getVisualLength(newCategory) > 12) {
-            categoryMessage.setText("中/英 文需小於 6/12 字");
-        } else if (allCategories.contains(newCategory)) {
+        } else if (getVisualLength(newCategory) > 10) {
+            categoryMessage.setText("分類長度不能超過 10（中文算2）");
+        } else if (taskCategoryChoice.getItems().contains(newCategory)) {
             categoryMessage.setText("分類已存在");
         } else {
-            allCategories.add(newCategory);
-            setupCategoryTabs();
+            taskCategoryChoice.getItems().add(newCategory);
+            categoryHelper.refreshCategoryTabs();
             categoryMessage.setText("已新增分類：" + newCategory);
             addCategoryBox.setVisible(false);
             addCategoryBox.setManaged(false);
         }
-
-
     }
 
     @FXML
@@ -133,141 +112,20 @@ public class TaskPanelController {
         addCategoryBox.setManaged(false);
         categoryMessage.setText("");
     }
-    private void setupCategoryTabs() {
-        categoryTabs.getChildren().clear();
-        categoryDropdown.getItems().clear();
 
-        Button allButton = new Button("全部");
-        allButton.setOnAction(e -> {
-            currentCategoryFilter = "全部";
-            refreshTaskViews();
-            highlightSelectedTab("全部");
-        });
-        categoryTabs.getChildren().add(allButton);
-
-        List<String> visibleCategories = allCategories.size() > MAX_VISIBLE_TABS ? allCategories.subList(0, MAX_VISIBLE_TABS) : allCategories;
-        List<String> overflowCategories = allCategories.size() > MAX_VISIBLE_TABS ? allCategories.subList(MAX_VISIBLE_TABS, allCategories.size()) : List.of();
-
-        for (String category : visibleCategories) {
-            if (category.equals("無")) continue;
-            Button tabButton = createCategoryTabButton(category);
-            categoryTabs.getChildren().add(tabButton);
-        }
-
-
-        if (!overflowCategories.isEmpty()) {
-            categoryDropdown.setVisible(true);
-            categoryDropdown.getItems().setAll(overflowCategories);
-            categoryDropdown.setOnAction(e -> {
-                currentCategoryFilter = categoryDropdown.getValue();
-                refreshTaskViews();
-                highlightSelectedTab(null);
-            });
-        } else {
-            categoryDropdown.setVisible(false);
-        }
-
-        highlightSelectedTab("全部");
-    }
-
-    private Button createCategoryTabButton(String category) {
-        Button tabButton = new Button(category);
-        tabButton.setOnAction(e -> {
-            currentCategoryFilter = category;
-            refreshTaskViews();
-            highlightSelectedTab(category);
-        });
-
-        // 右鍵選單
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem addCategory = new MenuItem("新增分類");
-        addCategory.setOnAction(e -> handleShowAddCategory());
-
-        MenuItem deleteCategory = new MenuItem("刪除此分類");
-        deleteCategory.setOnAction(e -> {
-            allCategories.remove(category);
-            setupCategoryTabs();
-            refreshTaskViews();
-        });
-
-        contextMenu.getItems().addAll(addCategory, deleteCategory);
-        tabButton.setContextMenu(contextMenu);
-
-        return tabButton;
-    }
-
-    private int getVisualLength(String s) {
-        int length = 0;
-        for (char c : s.toCharArray()) {
-            // 中文、日文、韓文、全形符號
-            if (Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS ||
-                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION ||
-                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS ||
-                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HANGUL_SYLLABLES ||
-                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HIRAGANA ||
-                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.KATAKANA) {
-                length += 2;
-            } else {
-                length += 1;
-            }
-        }
-        return length;
-    }
-
-
-    private void highlightSelectedTab(String selected) {
-        categoryTabs.getChildren().forEach(node -> {
-            if (node instanceof Button button) {
-                if (button.getText().equals(selected)) {
-                    button.setStyle("-fx-background-color: #90caf9;");
-                } else {
-                    button.setStyle("");
-                }
-            }
-        });
-    }
-
-    void refreshTaskViews() {
-        String query = searchField.getText().trim().toLowerCase();
-
-        uncompletedListView.getItems().setAll(taskManager.getAllTasks().stream()
-                .filter(t -> !t.isCompleted()
-                        && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
-                        && (query.isEmpty() || t.getTitle().toLowerCase().contains(query) || t.getCategory().toLowerCase().contains(query)))
-                .toList());
-
-        completedListView.getItems().setAll(taskManager.getAllTasks().stream()
-                .filter(t -> t.isCompleted()
-                        && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
-                        && (query.isEmpty() || t.getTitle().toLowerCase().contains(query) || t.getCategory().toLowerCase().contains(query)))
-                .toList());
+    @FXML
+    private void handleShowTaskInput() {
+        taskInputHelper.showTaskInputBox();
     }
 
     @FXML
     private void handleAddTask() {
+        taskInputHelper.handleAddTask();
+    }
 
-        String title = inputField.getText().trim();
-        if (!title.isEmpty()) {
-//            Task task = new Task(title, LocalDate.now());
-            LocalDate deadline = deadlinePicker.getValue() != null ? deadlinePicker.getValue() : LocalDate.now();
-            Task task = new Task(title, deadline);
-
-            String category = taskCategoryChoice.getValue() != null ? taskCategoryChoice.getValue() : "其他";
-            task.setCategory(category);
-            task.setTags(category);
-            String priorityText = priorityChoice.getValue() != null ? priorityChoice.getValue() : "中";
-            int priority = switch (priorityText) {
-                case "高" -> 3;
-                case "中" -> 2;
-                default -> 1;
-            };
-            task.setPriority(priority);
-            task.setRecurrence(recurrenceChoice.getValue() != null ? recurrenceChoice.getValue() : "無");
-            taskManager.addTask(task);
-            inputField.clear();
-            refreshTaskViews();
-            updatePanels();
-        }
+    @FXML
+    private void handleCancelAddTask() {
+        taskInputHelper.hideTaskInputBox();
     }
 
     @FXML
@@ -284,64 +142,69 @@ public class TaskPanelController {
     }
 
     @FXML
-    private void handleShowTaskInput() {
-        taskInputBox.setVisible(true);
-        taskInputBox.setManaged(true);
-        inputField.clear();
-        taskCategoryChoice.getSelectionModel().select("無");
-        priorityChoice.getSelectionModel().select("中");
-        recurrenceChoice.getSelectionModel().select("無");
-    }
-
-    @FXML
-    private void handleCancelAddTask() {
-        taskInputBox.setVisible(false);
-        taskInputBox.setManaged(false);
-    }
-
-
-    public void checkDeadlines() {
-        LocalDate today = LocalDate.now();
-        StringBuilder overdueList = new StringBuilder();
-        for (Task task : taskManager.getAllTasks()) {
-            if (!task.isCompleted() && (task.getDeadline().isBefore(today) || task.getDeadline().equals(today))) {
-                String status = task.getDeadline().isBefore(today) ? "（已過期）" : "（今天截止）";
-                overdueList.append(task.toString()).append(status).append("\n");
-            }
-        }
-        if (overdueList.length() > 0) {
-            showAlert("以下任務已到期或即將到期：\n" + overdueList, Alert.AlertType.INFORMATION);
-        }
-    }
-
-    @FXML
     private void handleExportTasks() {
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
     @FXML
     private void toggleDarkMode() {
-        darkMode = darkModeToggle.isSelected();
+        boolean dark = darkModeToggle.isSelected();
         if (uncompletedListView.getScene() != null) {
-            if (darkMode) {
+            if (dark) {
                 uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
             } else {
                 uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
             }
         }
-        uncompletedListView.refresh();
-        completedListView.refresh();
     }
 
-    @FXML private DatePicker deadlinePicker;
-
-
-    private void updatePanels() {
-        if (statsController != null) statsController.updateCharts();
-        if (calendarController != null) calendarController.refreshCalendarView();
+    public void refreshTaskViews() {
+        taskViewHelper.refreshTaskViews();
     }
 
-    private void showAlert(String msg, Alert.AlertType type) {
-        // 留空或可以改用內嵌 Label
+    public void checkDeadlines() {
+        deadlineHelper.checkDeadlines();
     }
+
+    public void updatePanels() {
+        // 若有 stats/calendar 可由這裡串接更新
+    }
+
+    // 🔧 視覺長度工具
+    private int getVisualLength(String s) {
+        int length = 0;
+        for (char c : s.toCharArray()) {
+            if (Character.UnicodeBlock.of(c).toString().contains("CJK") ||
+                    Character.UnicodeBlock.of(c) == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
+                length += 2;
+            } else {
+                length += 1;
+            }
+        }
+        return length;
+    }
+
+    // 👉 getter
+    public TaskManager getTaskManager() { return taskManager; }
+    public TaskRepository getTaskRepo() { return taskRepo; }
+
+    public HBox getCategoryTabs() { return categoryTabs; }
+    public ComboBox<String> getCategoryDropdown() { return categoryDropdown; }
+    public HBox getAddCategoryBox() { return addCategoryBox; }
+    public TextField getAddCategoryField() { return addCategoryField; }
+    public Label getCategoryMessage() { return categoryMessage; }
+
+    public TextField getSearchField() { return searchField; }
+    public TextField getInputField() { return inputField; }
+    public ComboBox<String> getTaskCategoryChoice() { return taskCategoryChoice; }
+    public ComboBox<String> getPriorityChoice() { return priorityChoice; }
+    public ComboBox<String> getRecurrenceChoice() { return recurrenceChoice; }
+
+    public ListView<Task> getUncompletedListView() { return uncompletedListView; }
+    public ListView<Task> getCompletedListView() { return completedListView; }
+
+    public VBox getTaskInputBox() { return taskInputBox; }
+
+    public String getCurrentCategoryFilter() { return currentCategoryFilter; }
+    public void setCurrentCategoryFilter(String filter) { this.currentCategoryFilter = filter; }
 }
