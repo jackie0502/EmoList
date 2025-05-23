@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import java.time.LocalDate;
 import java.util.List;
 
+
 public class TaskPanelController {
     @FXML private HBox categoryTabs;
     @FXML private ComboBox<String> categoryDropdown;
@@ -230,13 +231,13 @@ public class TaskPanelController {
     void refreshTaskViews() {
         String query = searchField.getText().trim().toLowerCase();
 
-        uncompletedListView.getItems().setAll(taskManager.getAllTasks().stream()
+        uncompletedListView.getItems().setAll(taskManager.getTasks().stream()
                 .filter(t -> !t.isCompleted()
                         && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
                         && (query.isEmpty() || t.getTitle().toLowerCase().contains(query) || t.getCategory().toLowerCase().contains(query)))
                 .toList());
 
-        completedListView.getItems().setAll(taskManager.getAllTasks().stream()
+        completedListView.getItems().setAll(taskManager.getTasks().stream()
                 .filter(t -> t.isCompleted()
                         && (currentCategoryFilter.equals("全部") || t.getCategory().equals(currentCategoryFilter))
                         && (query.isEmpty() || t.getTitle().toLowerCase().contains(query) || t.getCategory().toLowerCase().contains(query)))
@@ -245,13 +246,9 @@ public class TaskPanelController {
 
     @FXML
     private void handleAddTask() {
-
         String title = inputField.getText().trim();
         if (!title.isEmpty()) {
-//            Task task = new Task(title, LocalDate.now());
-            LocalDate deadline = deadlinePicker.getValue() != null ? deadlinePicker.getValue() : LocalDate.now();
-            Task task = new Task(title, deadline);
-
+            Task task = new Task(title, LocalDate.now());
             String category = taskCategoryChoice.getValue() != null ? taskCategoryChoice.getValue() : "其他";
             task.setCategory(category);
             task.setTags(category);
@@ -277,7 +274,7 @@ public class TaskPanelController {
             selected = completedListView.getSelectionModel().getSelectedItem();
         }
         if (selected != null) {
-            taskManager.getAllTasks().remove(selected);
+            taskManager.getTasks().remove(selected);
             refreshTaskViews();
             updatePanels();
         }
@@ -303,7 +300,7 @@ public class TaskPanelController {
     public void checkDeadlines() {
         LocalDate today = LocalDate.now();
         StringBuilder overdueList = new StringBuilder();
-        for (Task task : taskManager.getAllTasks()) {
+        for (Task task : taskManager.getTasks()) {
             if (!task.isCompleted() && (task.getDeadline().isBefore(today) || task.getDeadline().equals(today))) {
                 String status = task.getDeadline().isBefore(today) ? "（已過期）" : "（今天截止）";
                 overdueList.append(task.toString()).append(status).append("\n");
@@ -316,7 +313,7 @@ public class TaskPanelController {
 
     @FXML
     private void handleExportTasks() {
-        taskRepo.saveTasks(taskManager.getAllTasks());
+        taskRepo.saveTasks(taskManager.getTasks());
     }
 
     @FXML
@@ -332,9 +329,6 @@ public class TaskPanelController {
         uncompletedListView.refresh();
         completedListView.refresh();
     }
-
-    @FXML private DatePicker deadlinePicker;
-
 
     private void updatePanels() {
         if (statsController != null) statsController.updateCharts();

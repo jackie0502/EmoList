@@ -24,6 +24,8 @@ import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 
+
+
 public class CalendarPanelController {
 
     @FXML private GridPane calendarGrid;
@@ -96,7 +98,6 @@ public class CalendarPanelController {
             dateLabel.setStyle("-fx-text-fill: lightgray;");
         }
 
-
         long taskCount = taskManager.getTasks().stream()
                 .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())
                 .count();
@@ -119,7 +120,7 @@ public class CalendarPanelController {
     }
 
     private void showTasksForDate(LocalDate date, Runnable refreshCallback) {
-        List<Task> tasksForDate = taskManager.getAllTasks().stream()
+        List<Task> tasksForDate = taskManager.getTasks().stream()
                 .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())
                 .collect(Collectors.toList());
 
@@ -175,12 +176,14 @@ public class CalendarPanelController {
                     }
                 }
 
-                // 確保同步儲存到 JSON
-                taskManager.saveAll();
+                // 修改任務狀態後，呼叫 TaskPanelController 的 refresh 方法
+                taskPanelController.refreshTaskViews();
 
-                // 刷新任務面板與日曆
-                if (taskPanelController != null) taskPanelController.refreshTaskViews();
-                if (refreshCallback != null) refreshCallback.run();
+                // 呼叫刷新callback
+                if (refreshCallback != null) {
+                    refreshCallback.run(); // 會同時更新日曆跟任務面板
+                }
+
                 taskWindow.close();
             });
 

@@ -33,21 +33,65 @@ public class Task {
         this.recurrence = (recurrence != null ? recurrence : "無");
     }
 
-    public String getTitle() {return title;}
-    public boolean isCompleted() {return isCompleted;}
-    public LocalDate getDeadline() {return deadline;}
-    public String getCategory() {return category;}
-    public int getPriority() {return priority;}
-    public String getTags() {return tags;}
-    public String getRecurrence() {return recurrence;}
+    public String getTitle() {
+        return title;
+    }
 
-    public void setCompleted(boolean completed) {this.isCompleted = completed;}
-    public void setCategory(String category) {this.category = category;}
-    public void setPriority(int priority) {this.priority = priority;}
-    public void setTags(String tags) {this.tags = tags;}
-    public void setRecurrence(String recurrence) {this.recurrence = recurrence;}
+    public boolean isCompleted() {
+        return isCompleted;
+    }
 
-    public boolean isRecurring() {return recurrence != null && !recurrence.equals("無");}
-    public void toggleCompleted() {isCompleted = !isCompleted;}
+    public LocalDate getDeadline() {
+        return deadline;
+    }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public String getRecurrence() {
+        return recurrence;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.isCompleted = completed;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public void setRecurrence(String recurrence) {
+        this.recurrence = recurrence;
+    }
+
+    public boolean isRecurring() {
+        return recurrence != null && !recurrence.equals("無");
+    }
+
+    public void toggleCompleted() {
+        isCompleted = !isCompleted;
+    }
+
+    @Override
+    public String toString() {
+        return (isCompleted ? "[✔] " : "[ ] ") + title +
+                (deadline != null ? " (" + deadline.toString() + ")" : "");
+    }
 }
