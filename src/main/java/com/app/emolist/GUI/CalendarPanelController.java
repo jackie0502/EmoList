@@ -54,17 +54,30 @@ public class CalendarPanelController {
         calendarGrid.getChildren().clear();
         monthLabel.setText(currentMonth.format(DateTimeFormatter.ofPattern("yyyy年MM月")));
 
-        LocalDate firstDayOfMonth = currentMonth;
-        int firstDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue(); // 1=Monday
-        int daysInMonth = firstDayOfMonth.lengthOfMonth();
+        // 改成星期日到星期六
+        String[] weekDays = {"日", "一", "二", "三", "四", "五", "六"};
+        for (int i = 0; i < 7; i++) {
+            Label dayLabel = new Label("星期" + weekDays[i]);
+            dayLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center; -fx-padding: 5;");
+            calendarGrid.add(dayLabel, i, 0); // row = 0 表示星期列
+        }
 
-        // 42格 = 6列7行
+        LocalDate firstDayOfMonth = currentMonth;
+
+        // 取得當月第一天是星期幾（週日 = 0）
+        int firstDayOfWeek = (firstDayOfMonth.getDayOfWeek().getValue() % 7); // 週日=0, 週一=1, ..., 週六=6
+
+        // 找出日曆第一格要顯示的日期（可能是上個月的）
+        LocalDate startDate = firstDayOfMonth.minusDays(firstDayOfWeek);
+
         for (int i = 0; i < 42; i++) {
-            LocalDate cellDate = firstDayOfMonth.minusDays(firstDayOfWeek - 1).plusDays(i);
+            LocalDate cellDate = startDate.plusDays(i);
             VBox dayBox = createDayBox(cellDate);
-            calendarGrid.add(dayBox, i % 7, i / 7);
+            calendarGrid.add(dayBox, i % 7, (i / 7) + 1); // +1 跳過星期列
         }
     }
+
+
 
     private VBox createDayBox(LocalDate date) {
         VBox box = new VBox();
@@ -74,12 +87,18 @@ public class CalendarPanelController {
         box.getStyleClass().add("calendar-cell");
 
         Label dateLabel = new Label(String.valueOf(date.getDayOfMonth()));
+
+        // 今天標紅
         if (date.equals(LocalDate.now())) {
             dateLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+        } else if (!date.getMonth().equals(currentMonth.getMonth())) {
+            // 不在當月 → 淺灰色
+            dateLabel.setStyle("-fx-text-fill: lightgray;");
         }
 
-        long taskCount = taskManager.getAllTasks().stream()
-                .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())  // 只算未完成
+
+        long taskCount = taskManager.getTasks().stream()
+                .filter(task -> date.equals(task.getDeadline()) && !task.isCompleted())
                 .count();
 
         Label taskLabel = new Label(taskCount > 0 ? taskCount + " 個未完成任務" : "");
@@ -170,6 +189,8 @@ public class CalendarPanelController {
         }
 
         Scene scene = new Scene(root, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/com/app/emolist/GUI/view/style.css").toExternalForm());
+
         taskWindow.setScene(scene);
         taskWindow.initModality(Modality.APPLICATION_MODAL);
         taskWindow.show();

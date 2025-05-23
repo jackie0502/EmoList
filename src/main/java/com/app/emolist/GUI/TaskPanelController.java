@@ -7,9 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -104,6 +102,7 @@ public class TaskPanelController {
     @FXML
     private void handleShowAddCategory() {
         addCategoryBox.setVisible(true);
+        addCategoryBox.setManaged(true);
         addCategoryField.clear();
         categoryMessage.setText("");
     }
@@ -122,6 +121,7 @@ public class TaskPanelController {
             setupCategoryTabs();
             categoryMessage.setText("已新增分類：" + newCategory);
             addCategoryBox.setVisible(false);
+            addCategoryBox.setManaged(false);
         }
 
 
@@ -130,6 +130,7 @@ public class TaskPanelController {
     @FXML
     private void handleCancelAddCategory() {
         addCategoryBox.setVisible(false);
+        addCategoryBox.setManaged(false);
         categoryMessage.setText("");
     }
     private void setupCategoryTabs() {
@@ -244,9 +245,13 @@ public class TaskPanelController {
 
     @FXML
     private void handleAddTask() {
+
         String title = inputField.getText().trim();
         if (!title.isEmpty()) {
-            Task task = new Task(title, LocalDate.now());
+//            Task task = new Task(title, LocalDate.now());
+            LocalDate deadline = deadlinePicker.getValue() != null ? deadlinePicker.getValue() : LocalDate.now();
+            Task task = new Task(title, deadline);
+
             String category = taskCategoryChoice.getValue() != null ? taskCategoryChoice.getValue() : "其他";
             task.setCategory(category);
             task.setTags(category);
@@ -327,6 +332,9 @@ public class TaskPanelController {
         uncompletedListView.refresh();
         completedListView.refresh();
     }
+
+    @FXML private DatePicker deadlinePicker;
+
 
     private void updatePanels() {
         if (statsController != null) statsController.updateCharts();
