@@ -1,102 +1,70 @@
 package com.app.emolist.DataBase;
 
 import com.app.emolist.Controller.Task;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.*;
+import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class TaskRepository {
-    private static final String FILE_PATH = "tasks.json";
+    private static final String DEFAULT_PATH = "data/tasks.json";
+    private static final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
 
-    public void saveTasks(List<Task> tasks) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            writer.write("[\n");
-            for (int i = 0; i < tasks.size(); i++) {
-                Task task = tasks.get(i);
-                writer.write("  {\n");
-                writer.write("    \"title\": \"" + escape(task.getTitle()) + "\",\n");
-                writer.write("    \"completed\": " + task.isCompleted() + ",\n");
-                writer.write("    \"deadline\": \"" + task.getDeadline().toString() + "\",\n");
-                writer.write("    \"category\": \"" + escape(task.getCategory()) + "\",\n");
-                writer.write("    \"priority\": " + task.getPriority() + ",\n");
-                writer.write("    \"tags\": \"" + escape(task.getTags()) + "\",\n");
-                writer.write("    \"recurrence\": \"" + escape(task.getRecurrence()) + "\"\n");
-                writer.write("  }" + (i < tasks.size() - 1 ? "," : "") + "\n");
-            }
-            writer.write("]");
-        } catch (IOException e) {
-            e.printStackTrace();
+    // LocalDate 序列化/反序列化 Adapter
+    static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        @Override
+        public JsonElement serialize(LocalDate date, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
+            return new JsonPrimitive(date.format(formatter));
+        }
+        @Override
+        public LocalDate deserialize(JsonElement json, java.lang.reflect.Type typeOfT, JsonDeserializationContext context)
+                throws JsonParseException {
+            return LocalDate.parse(json.getAsString(), formatter);
         }
     }
 
-    public List<Task> loadTasks() {
-        List<Task> tasks = new ArrayList<>();
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return tasks;
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            String title = null;
-            boolean completed = false;
-            LocalDate deadline = null;
-            String category = "其他";
-            int priority = 1;
-            String tags = "";
-            String recurrence = "無";
+    // 儲存任務
+    public static boolean saveTasks(List<Task> tasks) {
+        File file = new File(DEFAULT_PATH);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) parent.mkdirs();
 
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("{")) {
-                    // 開始讀取一筆任務
-                    title = null;
-                    completed = false;
-                    deadline = null;
-                    category = "其他";
-                    priority = 1;
-                    tags = "";
-                    recurrence = "無";
-                } else if (line.startsWith("\"title\"")) {
-                    title = line.split(":")[1].trim().replaceAll("^\"|\",?$", "");
-                } else if (line.startsWith("\"completed\"")) {
-                    completed = Boolean.parseBoolean(line.split(":")[1].trim().replace(",", ""));
-                } else if (line.startsWith("\"deadline\"")) {
-                    String dateStr = line.split(":")[1].trim().replaceAll("^\"|\",?$", "");
-                    deadline = LocalDate.parse(dateStr);
-                } else if (line.startsWith("\"category\"")) {
-                    category = line.split(":")[1].trim().replaceAll("^\"|\",?$", "");
-                } else if (line.startsWith("\"priority\"")) {
-                    String numStr = line.split(":")[1].trim().replaceAll(",", "");
-                    try {
-                        priority = Integer.parseInt(numStr);
-                    } catch(NumberFormatException e) {
-                        priority = 1;
-                    }
-                } else if (line.startsWith("\"tags\"")) {
-                    tags = line.split(":")[1].trim().replaceAll("^\"|\",?$", "");
-                } else if (line.startsWith("\"recurrence\"")) {
-                    recurrence = line.split(":")[1].trim().replaceAll("^\"|\",?$", "");
-                } else if (line.startsWith("}")) {
-                    // 結束一筆任務，建立 Task 物件
-                    if (title != null && deadline != null) {
-                        Task task = new Task(title, deadline);
-                        if (completed) {
-                            task.setCompleted(true);
-                        }
-                        task.setCategory(category);
-                        task.setPriority(priority);
-                        task.setTags(tags);
-                        task.setRecurrence(recurrence);
-                        tasks.add(task);
-                    }
-                }
-            }
+        File tempFile = new File(DEFAULT_PATH + ".tmp");
+        try (Writer writer = new FileWriter(tempFile)) {
+            gson.toJson(tasks, writer);
+            writer.flush();
+            // 儲存完畢後再覆蓋
+            if (!tempFile.renameTo(file)) throw new IOException("儲存時覆蓋原始檔失敗");
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
-        return tasks;
     }
 
-    private String escape(String s) {
-        return s.replace("\"", "\\\"");
+    // 載入任務
+    public static List<Task> loadTasks() {
+        File file = new File(DEFAULT_PATH);
+        if (!file.exists()) return new ArrayList<>();
+        try (Reader reader = new FileReader(file)) {
+            Type listType = new TypeToken<List<Task>>() {}.getType();
+            List<Task> list = gson.fromJson(reader, listType);
+            return list != null ? list : new ArrayList<>();
+        } catch (Exception e) {
+            // 異常處理：資料損壞時回傳空清單
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 }
