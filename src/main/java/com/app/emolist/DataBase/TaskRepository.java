@@ -40,7 +40,7 @@ public class TaskRepository {
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) parent.mkdirs();
 
-        File tempFile = new File(DEFAULT_PATH + ".tmp");
+        File tempFile = new File(DEFAULT_PATH);
         try (Writer writer = new FileWriter(tempFile)) {
             gson.toJson(tasks, writer);
             writer.flush();
