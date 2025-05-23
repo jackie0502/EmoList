@@ -31,7 +31,19 @@ public class TaskInputHelper {
         String title = controller.getInputField().getText().trim();
         if (title.isEmpty()) return;
 
-        Task task = new Task(title, LocalDate.now());
+        Task task;
+
+//        LocalDate deadline = controller.getTaskDeadlinePicker().getValue(); // 讀取日期
+        // 判斷是否有選日期（假設 controller 有一個 DatePicker 名為 taskDeadlinePicker）
+
+//        if (deadline != null) {
+//            task = new Task(title, deadline);
+//        } else {
+//            task = new Task(title); // 沒有選日期，就用 LocalDate.MAX 當作預設
+//        }
+//        LocalDate deadline =  controller.getDeadline()
+        task = new Task(title);
+//        Task task = new Task(title, deadline);
 //        task.setCreatedDate(LocalDate.now());
 
         String category = controller.getTaskCategoryChoice().getValue();
