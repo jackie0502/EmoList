@@ -113,7 +113,9 @@ public class TaskPanelController {
 
     public void setStatsController(StatsPanelController statsController) {
         this.statsController = statsController;
+        this.statsController.setTaskManager(this.taskManager); // 加上這行，讓 StatsPanel 有資料
     }
+
 
     @FXML
     private void handleShowAddCategory() {
@@ -163,6 +165,9 @@ public class TaskPanelController {
         if (calendarController != null) {
             calendarController.refreshCalendarView(); // 👈 重複呼叫
         }
+        if (statsController != null) {
+            statsController.updateCharts();
+        }
     }
 
     @FXML
@@ -181,6 +186,9 @@ public class TaskPanelController {
         updatePanels(); // 👈 這裡會更新日曆
         if (calendarController != null) {
             calendarController.refreshCalendarView(); // 👈 重複呼叫
+        }
+        if (statsController != null) {
+            statsController.updateCharts();
         }
     }
 
