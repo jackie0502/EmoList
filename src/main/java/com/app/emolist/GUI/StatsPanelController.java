@@ -46,6 +46,13 @@ public class StatsPanelController {
         );
         pieChart.setData(pieData);
 
+        for (PieChart.Data data : pieData) {
+            if (data.getName().equals("已完成")) {
+                data.getNode().setStyle("-fx-pie-color: #228B22;");  // 原諒的顏色
+            } else if (data.getName().equals("未完成")) {
+                data.getNode().setStyle("-fx-pie-color: #D0021B;");  // 警示顏色
+            }
+        }
         Map<LocalDate, Integer> pressureMap = new TreeMap<>();
         for (Task t : tasks) {
             LocalDate date = t.getDeadline();
