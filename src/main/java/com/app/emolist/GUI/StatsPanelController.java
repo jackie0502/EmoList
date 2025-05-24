@@ -40,19 +40,24 @@ public class StatsPanelController {
         int completedCount = (int) tasks.stream().filter(Task::isCompleted).count();
         int incompleteCount = total - completedCount;
 
-        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                new PieChart.Data("已完成", completedCount),
-                new PieChart.Data("未完成", incompleteCount)
-        );
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+        PieChart.Data completed = new PieChart.Data("已完成", completedCount);
+        PieChart.Data incomplete = new PieChart.Data("未完成", incompleteCount);
+        pieData.addAll(completed, incomplete);
         pieChart.setData(pieData);
 
-        for (PieChart.Data data : pieData) {
-            if (data.getName().equals("已完成")) {
-                data.getNode().setStyle("-fx-pie-color: #228B22;");  // 原諒的顏色
-            } else if (data.getName().equals("未完成")) {
-                data.getNode().setStyle("-fx-pie-color: #D0021B;");  // 警示顏色
+        // 延遲設定顏色，避免節點尚未初始化造成 null
+        javafx.application.Platform.runLater(() -> {
+            for (PieChart.Data data : pieData) {
+                if (data.getName().equals("已完成")) {
+                    data.getNode().setStyle("-fx-pie-color: #228B22;");  // 綠色
+                } else if (data.getName().equals("未完成")) {
+                    data.getNode().setStyle("-fx-pie-color: #D0021B;");  // 紅色
+                }
             }
-        }
+        });
+
+        // 壓力圖（LineChart）資料處理
         Map<LocalDate, Integer> pressureMap = new TreeMap<>();
         for (Task t : tasks) {
             LocalDate date = t.getDeadline();
@@ -69,14 +74,17 @@ public class StatsPanelController {
         lineChart.getData().add(series);
     }
 
+
     public void applyTheme(boolean dark) {
         if (dark) {
+            view.getStyleClass().add("dark");
             view.setStyle("-fx-background-color: #2b2b2b;");
             ((CategoryAxis) lineChart.getXAxis()).setTickLabelFill(Color.WHITE);
             ((NumberAxis) lineChart.getYAxis()).setTickLabelFill(Color.WHITE);
             pieChart.lookup(".chart-title").setStyle("-fx-text-fill: #FFFFFF;");
             lineChart.lookup(".chart-title").setStyle("-fx-text-fill: #FFFFFF;");
         } else {
+            view.getStyleClass().remove("dark");
             view.setStyle("");
             ((CategoryAxis) lineChart.getXAxis()).setTickLabelFill(Color.BLACK);
             ((NumberAxis) lineChart.getYAxis()).setTickLabelFill(Color.BLACK);
@@ -84,4 +92,5 @@ public class StatsPanelController {
             lineChart.lookup(".chart-title").setStyle("-fx-text-fill: #000000;");
         }
     }
+
 }

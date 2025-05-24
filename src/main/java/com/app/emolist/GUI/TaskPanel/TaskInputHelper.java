@@ -38,10 +38,6 @@ public class TaskInputHelper {
         } else {
             task = new Task(title);
         }
-//        LocalDate deadline =  controller.getDeadline()
-//        task = new Task(title);
-//        Task task = new Task(title, deadline);
-//        task.setCreatedDate(LocalDate.now());
 
         String category = controller.getTaskCategoryChoice().getValue();
         task.setCategory(category != null ? category : "無");

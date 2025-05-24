@@ -44,7 +44,7 @@ public class TaskViewHelper {
                         .orElse(task);
 
                 String text = actualTask.getTitle();
-                if (actualTask.getDeadline() != null) {
+                if (task.getDeadline() != null && task.getDeadline().isBefore(LocalDate.now().plusDays(500))) {
                     text += " (" + actualTask.getDeadline() + ")";
                 }
 

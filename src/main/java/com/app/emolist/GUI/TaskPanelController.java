@@ -97,17 +97,18 @@ public class TaskPanelController {
         for (Task task : selectedTasks) {
             task.setCompleted(true);
         }
-
+        updatePanels();
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 更新日曆
+        }
         selectedTasks.clear();
         refreshTaskViews();
         updatePanels(); // 更新日曆與統計圖表（如果有設）
-
-
     }
-
 
     public void setCalendarController(CalendarPanelController calendarController) {
         this.calendarController = calendarController;
+        calendarController.setTaskManager(this.taskManager); // 👈 加上這行
     }
 
     public void setStatsController(StatsPanelController statsController) {
@@ -157,6 +158,11 @@ public class TaskPanelController {
         if (statsController != null) {
             statsController.updateCharts();
         }
+        refreshTaskViews();
+        updatePanels(); // 👈 這裡會更新日曆
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 重複呼叫
+        }
     }
 
     @FXML
@@ -172,7 +178,10 @@ public class TaskPanelController {
 
         selectedTasks.clear();
         refreshTaskViews();
-        updatePanels();
+        updatePanels(); // 👈 這裡會更新日曆
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 重複呼叫
+        }
     }
 
 
@@ -208,6 +217,9 @@ public class TaskPanelController {
         // 若有 stats/calendar 可由這裡串接更新
         if (statsController != null) {
             statsController.updateCharts();
+        }
+        if (calendarController != null) {
+            calendarController.refreshCalendarView();  // <-- 這行必須有
         }
     }
 

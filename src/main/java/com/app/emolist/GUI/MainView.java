@@ -34,14 +34,10 @@ public class MainView extends Application {
             StatsPanelController statsController = statsLoader.getController();
             statsController.setTaskManager(sharedTaskManager);
 
-            // 建立彼此注入
-//            taskController.setCalendarController(calendarController);
-//            taskController.setStatsController(statsController);
-            // 建立彼此注入
-            taskController.setCalendarController(calendarController);
+            // ✅ 建立 controller 彼此之間的關聯
+            taskController.setCalendarController(calendarController); // ← 這樣就夠了，不需要額外的 taskPanelController
             calendarController.setTaskPanelController(taskController);
             taskController.setStatsController(statsController);
-
 
             // 主畫面排版
             HBox topRow = new HBox(20, taskPanel, calendarPanel);
