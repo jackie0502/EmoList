@@ -70,7 +70,7 @@ public class StatsPanelController {
             LocalDate date = t.getDeadline();
             if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
 
-            pressureMap.put(date, pressureMap.getOrDefault(date, 0) + t.getPriority());
+            pressureMap.put(date, pressureMap.getOrDefault(date, 0) + t.getEmoScore());
             taskCountMap.put(date, taskCountMap.getOrDefault(date, 0) + 1);
         }
 
