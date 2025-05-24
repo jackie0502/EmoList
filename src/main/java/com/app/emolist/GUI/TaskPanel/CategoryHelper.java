@@ -1,12 +1,16 @@
 package com.app.emolist.GUI.TaskPanel;
 
-import com.app.emolist.Controller.Task;
 import com.app.emolist.GUI.TaskPanelController;
-import javafx.scene.control.*;
+import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class CategoryHelper {
 
@@ -17,13 +21,19 @@ public class CategoryHelper {
     }
 
     public void refreshCategoryTabs() {
+        Platform.runLater(this::actuallyRefreshCategoryTabs);
+    }
+
+    private void actuallyRefreshCategoryTabs() {
         HBox tabs = controller.getCategoryTabs();
+        ComboBox<String> dropdown = controller.getCategoryDropdown();
         tabs.getChildren().clear();
-        controller.getCategoryDropdown().getItems().clear();
+        dropdown.getItems().clear();
+        dropdown.setVisible(false);
 
-        List<String> all = controller.getTaskCategoryChoice().getItems();
+        List<String> allCategories = controller.getTaskCategoryChoice().getItems();
 
-        // 全部按鈕
+        // ✅ 加入「全部」按鈕
         Button allButton = new Button("全部");
         allButton.setOnAction(e -> {
             controller.setCurrentCategoryFilter("全部");
@@ -32,14 +42,43 @@ public class CategoryHelper {
         });
         tabs.getChildren().add(allButton);
 
-        for (String cat : all) {
-            if (Objects.equals(cat, "無")) continue; // "無" 不顯示在 tabs
-            Button tab = createTabButton(cat);
-            tabs.getChildren().add(tab);
+        // ✅ 控制分類顯示數量（第 1 ～ 2 項）
+        int maxInline = 2;
+        List<String> overflowCategories = new ArrayList<>();
+
+        int index = 0;
+        for (String cat : allCategories) {
+            if (cat.equals("無")) continue;
+
+            if (index < maxInline) {
+                tabs.getChildren().add(createTabButton(cat));
+            } else {
+                overflowCategories.add(cat);
+            }
+            index++;
+        }
+
+        // ✅ 加入下拉式選單
+        if (!overflowCategories.isEmpty()) {
+            dropdown.getItems().setAll(overflowCategories);
+            dropdown.setVisible(true);
+
+            dropdown.setOnAction(e -> {
+                String selected = dropdown.getValue();
+                if (selected != null) {
+                    controller.setCurrentCategoryFilter(selected);
+                    controller.refreshTaskViews();
+                    highlightTab(null);
+                    Platform.runLater(() -> dropdown.setValue(null));
+                }
+            });
         }
 
         highlightTab(controller.getCurrentCategoryFilter());
     }
+
+
+
 
     private Button createTabButton(String category) {
         Button button = new Button(category);
@@ -51,24 +90,26 @@ public class CategoryHelper {
 
         ContextMenu menu = new ContextMenu();
 
-        MenuItem add = new MenuItem("新增分類");
-        add.setOnAction(e -> controller.showAddCategoryInput());
 
-        MenuItem del = new MenuItem("刪除此分類");
-        del.setOnAction(e -> {
+        MenuItem delete = new MenuItem("刪除此分類");
+        delete.setOnAction(e -> {
             controller.getTaskCategoryChoice().getItems().remove(category);
-            refreshCategoryTabs();
-            controller.refreshTaskViews();
+            refreshCategoryTabs();                  // 重建分類列
+            controller.refreshTaskViews();          // 重新顯示任務
+            if (controller.getCurrentCategoryFilter().equals(category)) {
+                controller.setCurrentCategoryFilter("全部"); // 若刪除當前分類，回到全部
+            }
         });
 
-        menu.getItems().addAll(add, del);
+        menu.getItems().add(delete);
         button.setContextMenu(menu);
 
         return button;
     }
 
+
     private void highlightTab(String selected) {
-        for (var node : controller.getCategoryTabs().getChildren()) {
+        for (Node node : controller.getCategoryTabs().getChildren()) {
             if (node instanceof Button btn) {
                 if (btn.getText().equals(selected)) {
                     btn.setStyle("-fx-background-color: #90caf9;");
