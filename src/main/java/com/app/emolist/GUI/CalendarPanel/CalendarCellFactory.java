@@ -32,6 +32,7 @@ public class CalendarCellFactory {
         box.getStyleClass().add("calendar-cell");
 
         Label dateLabel = new Label(String.valueOf(date.getDayOfMonth()));
+        dateLabel.getStyleClass().add("date-label");
         if (date.equals(LocalDate.now())) {
             dateLabel.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
         }
