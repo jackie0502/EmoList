@@ -10,7 +10,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-
+import java.util.Set;
+import java.util.HashSet;
 import java.time.LocalDate;
 
 public class TaskPanelController {
@@ -35,12 +36,15 @@ public class TaskPanelController {
     private final TaskRepository taskRepo = new TaskRepository();
 
     private String currentCategoryFilter = "全部";
+    private final Set<Task> selectedTasks = new HashSet<>();
+
 
     // 子模組
     private final CategoryHelper categoryHelper = new CategoryHelper(this);
     private final TaskInputHelper taskInputHelper = new TaskInputHelper(this);
     private final TaskViewHelper taskViewHelper = new TaskViewHelper(this);
     private final DeadlineHelper deadlineHelper = new DeadlineHelper(this);
+    public Set<Task> getSelectedTasks() { return selectedTasks; }
     private CalendarPanelController calendarController;
     private StatsPanelController statsController;
 
@@ -74,6 +78,33 @@ public class TaskPanelController {
         this.taskManager.getAllTasks().clear();
         this.taskManager.getAllTasks().addAll(taskManager.getAllTasks());
     }
+
+    @FXML
+    private void handleCompleteSelectedTasks() {
+
+//        System.out.println("✅ 勾選任務數量：" + selectedTasks.size());
+//
+//        for (Task task : selectedTasks) {
+//            System.out.println("👉 勾選中的任務 ID: " + task.getId() + " / title: " + task.getTitle());
+//        }
+//
+//        for (Task task : taskManager.getAllTasks()) {
+//            System.out.println("📦 所有任務 ID: " + task.getId() + " / completed: " + task.isCompleted());
+//        }
+
+        if (selectedTasks.isEmpty()) return;
+
+        for (Task task : selectedTasks) {
+            task.setCompleted(true);
+        }
+
+        selectedTasks.clear();
+        refreshTaskViews();
+        updatePanels(); // 更新日曆與統計圖表（如果有設）
+
+
+    }
+
 
     public void setCalendarController(CalendarPanelController calendarController) {
         this.calendarController = calendarController;
@@ -135,19 +166,15 @@ public class TaskPanelController {
 
     @FXML
     private void handleDeleteTask() {
-        Task selected = uncompletedListView.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            selected = completedListView.getSelectionModel().getSelectedItem();
-        }
-        if (selected != null) {
-            taskManager.getAllTasks().remove(selected);
-            refreshTaskViews();
-            updatePanels();
-        }
-        if (statsController != null) {
-            statsController.updateCharts();
-        }
+        if (selectedTasks.isEmpty()) return;
+
+        taskManager.getAllTasks().removeIf(selectedTasks::contains);
+
+        selectedTasks.clear();
+        refreshTaskViews();
+        updatePanels();
     }
+
 
     @FXML
     private void handleExportTasks() {
