@@ -31,7 +31,16 @@ public class TaskInputHelper {
         String title = controller.getInputField().getText().trim();
         if (title.isEmpty()) return;
 
-        Task task = new Task(title, LocalDate.now());
+        LocalDate deadline = controller.getTaskDeadlinePicker().getValue();
+        Task task;
+        if (deadline != null) {
+            task = new Task(title, deadline);
+        } else {
+            task = new Task(title);
+        }
+//        LocalDate deadline =  controller.getDeadline()
+//        task = new Task(title);
+//        Task task = new Task(title, deadline);
 //        task.setCreatedDate(LocalDate.now());
 
         String category = controller.getTaskCategoryChoice().getValue();

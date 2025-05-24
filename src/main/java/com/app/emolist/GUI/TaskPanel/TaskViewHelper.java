@@ -6,6 +6,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
+import java.time.LocalDate;
+
 public class TaskViewHelper {
 
     private final TaskPanelController controller;
@@ -31,7 +33,7 @@ public class TaskViewHelper {
                     setGraphic(null);
                 } else {
                     String text = task.getTitle();
-                    if (task.getDeadline() != null) {
+                    if (task.getDeadline() != null && task.getDeadline() !=  LocalDate.MAX) {
                         text += " (" + task.getDeadline() + ")";
                     }
 

@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.app.emolist.GUI.CalendarPanelController"
@@ -16,9 +17,11 @@
     </padding>
 
     <HBox spacing="10" alignment="CENTER">
+
         <Button text="‹" onAction="#prevMonth"/>
         <Label fx:id="monthLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
         <Button text="›" onAction="#nextMonth"/>
+
     </HBox>
 
     <GridPane fx:id="calendarGrid" hgap="5" vgap="5">
