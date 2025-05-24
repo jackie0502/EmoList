@@ -58,39 +58,35 @@ public class StatsPanelController {
         });
 
         // 壓力圖（LineChart）資料處理
+        // 壓力圖（LineChart）資料處理（限定 ±x 天）
         Map<LocalDate, Integer> pressureMap = new TreeMap<>();
+        Map<LocalDate, Integer> taskCountMap = new TreeMap<>();
+
+        LocalDate today = LocalDate.now();
+        LocalDate from = today.minusDays(15);
+        LocalDate to = today.plusDays(15);
+
         for (Task t : tasks) {
             LocalDate date = t.getDeadline();
+            if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
+
             pressureMap.put(date, pressureMap.getOrDefault(date, 0) + t.getPriority());
+            taskCountMap.put(date, taskCountMap.getOrDefault(date, 0) + 1);
         }
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("壓力指數");
+        series.setName("壓力指數（平均）");
+
         for (Map.Entry<LocalDate, Integer> entry : pressureMap.entrySet()) {
-            series.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
+            LocalDate date = entry.getKey();
+            int totalPressure = entry.getValue();
+            int taskCount = taskCountMap.get(date); // 此處不會為 null
+            double averagePressure = (double) totalPressure / taskCount;
+            series.getData().add(new XYChart.Data<>(date.toString(), averagePressure));
         }
 
         lineChart.getData().clear();
         lineChart.getData().add(series);
-    }
-
-
-    public void applyTheme(boolean dark) {
-        if (dark) {
-            view.getStyleClass().add("dark");
-            view.setStyle("-fx-background-color: #2b2b2b;");
-            ((CategoryAxis) lineChart.getXAxis()).setTickLabelFill(Color.WHITE);
-            ((NumberAxis) lineChart.getYAxis()).setTickLabelFill(Color.WHITE);
-            pieChart.lookup(".chart-title").setStyle("-fx-text-fill: #FFFFFF;");
-            lineChart.lookup(".chart-title").setStyle("-fx-text-fill: #FFFFFF;");
-        } else {
-            view.getStyleClass().remove("dark");
-            view.setStyle("");
-            ((CategoryAxis) lineChart.getXAxis()).setTickLabelFill(Color.BLACK);
-            ((NumberAxis) lineChart.getYAxis()).setTickLabelFill(Color.BLACK);
-            pieChart.lookup(".chart-title").setStyle("-fx-text-fill: #000000;");
-            lineChart.lookup(".chart-title").setStyle("-fx-text-fill: #000000;");
-        }
     }
 
 }
