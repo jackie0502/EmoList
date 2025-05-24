@@ -14,5 +14,6 @@ public class MainController {
         taskManager = new TaskManager();
         taskPanel.setTaskManager(taskManager);
         calendarPanel.setTaskManager(taskManager);
+        calendarPanel.setTaskPanelController(taskPanel);
     }
 }
