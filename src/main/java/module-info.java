@@ -23,4 +23,6 @@ module com.app.emolist {
     exports com.app.emolist.GUI;
     exports com.app.emolist.DataBase;
     exports com.app.emolist.Controller;
+    exports com.app.emolist.GUI.CalendarPanel;
+    opens com.app.emolist.GUI.CalendarPanel to javafx.fxml;
 }

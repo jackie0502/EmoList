@@ -11,6 +11,17 @@ public class Task {
     private String tags;
     private String recurrence;
 
+    public Task(String title) {
+        this.title = title;
+        this.deadline = LocalDate.MAX;
+        this.isCompleted = false;
+        // Default values for new fields
+        this.category = "其他";      // 預設分類「其他」
+        this.priority = 1;          // 預設重要性等級1（低）
+        this.tags = "";             // 預設無標籤
+        this.recurrence = "無";     // 預設無週期
+    }
+
     public Task(String title, LocalDate deadline) {
         this.title = title;
         this.deadline = deadline;
