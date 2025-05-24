@@ -20,6 +20,8 @@ public class CalendarPanelController {
     @FXML
     private void initialize() {
         currentMonth = LocalDate.now().withDayOfMonth(1);
+//        taskPanelController.refreshTaskViews(); // 同步顯示任務
+
     }
 
     public void setTaskManager(TaskManager manager) {
@@ -42,6 +44,9 @@ public class CalendarPanelController {
                     .minusDays(currentMonth.withDayOfMonth(1).getDayOfWeek().getValue() - 1)
                     .plusDays(i);
             calendarGrid.add(cellFactory.createDayCell(date), i % 7, i / 7);
+        }
+        if (taskPanelController != null) {
+            taskPanelController.refreshTaskViews();
         }
     }
 

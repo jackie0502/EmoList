@@ -25,6 +25,7 @@ public class TaskCompletionHandler {
         }
 
         taskManager.saveAll();
+//        taskManager.loadAll();
 
         if (taskPanelController != null) taskPanelController.refreshTaskViews();
         if (refreshCallback != null) refreshCallback.run();

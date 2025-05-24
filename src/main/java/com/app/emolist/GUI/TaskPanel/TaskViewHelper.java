@@ -43,10 +43,15 @@ public class TaskViewHelper {
                         task.setCompleted(checkBox.isSelected());
                         controller.refreshTaskViews();
                         controller.updatePanels();
+
+                        if (controller.getCalendarController() != null) {
+                            controller.getCalendarController().refreshCalendarView();
+                        }
                     });
 
                     setGraphic(checkBox);
                 }
+
             }
         };
     }

@@ -66,6 +66,7 @@ public class TaskPopupManager {
                         .completeTasks(tasks, checkBoxes, refreshCallback, stage);
             });
 
+
             HBox buttonBox = new HBox(completeBtn);
             buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
             buttonBox.setPadding(new Insets(10, 0, 0, 0));
