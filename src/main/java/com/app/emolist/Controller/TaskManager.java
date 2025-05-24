@@ -39,12 +39,12 @@ public class TaskManager {
 
     // 依截止日期升冪排序
     public void sortByDeadDate() {
-        taskList.sort(Comparator.comparing(Task::getDeadline));
+        taskList.sort(Comparator.comparing(Task::getDeadline, Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
-    // 依優先順序排序（假設 getPriority() 回傳 int，數字越小優先）
+    // 依優先順序排序（假設 getPriority() 回傳 int，數字越大優先）
     public void sortByPriority() {
-        taskList.sort(Comparator.comparingInt(Task::getPriority));
+        taskList.sort(Comparator.comparingInt(Task::getPriority).reversed());
     }
 
     // 依任務名稱排序
