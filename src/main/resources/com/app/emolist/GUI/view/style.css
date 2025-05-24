@@ -111,6 +111,20 @@
 .root.dark-mode .label {
     -fx-text-fill: #ffffff;
 }
+.calendar-cell.outside-month {
+    -fx-opacity: 1; /* 不透明 */
+}
+
+.date-label.outside-month {
+    -fx-text-fill: #d3d3d3; /* 灰字 */
+}
+
+
+.outside-month {
+    -fx-text-fill: #ffffff; /* 字體灰色 */
+    -fx-background-color: white; /* 背景維持白色 */
+}
+
 
 
 /* 11: StatsPanel 樣式 */
