@@ -189,6 +189,18 @@ public class TaskPanelController {
         return length;
     }
 
+    @FXML private DatePicker deadlinePicker;
+
+    public DatePicker getTaskDeadlinePicker() {
+        return deadlinePicker;
+    }
+
+    @FXML
+    private void handleClearDeadline() {
+        deadlinePicker.setValue(null);
+    }
+
+
     // 👉 getter
     public TaskManager getTaskManager() { return taskManager; }
     public TaskRepository getTaskRepo() { return taskRepo; }

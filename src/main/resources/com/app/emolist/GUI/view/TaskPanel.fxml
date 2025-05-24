@@ -27,6 +27,7 @@
             </HBox>
         </VBox>
 
+
         <TextField fx:id="searchField" promptText="搜尋任務..." />
 
         <Label text="未完成任務" />
@@ -55,6 +56,7 @@
             <HBox spacing="10">
                 <Button text="確認新增" onAction="#handleAddTask" />
                 <Button text="取消" onAction="#handleCancelAddTask" />
+                <Button text="清除日期" onAction="#handleClearDeadline" />
             </HBox>
         </VBox>
 
