@@ -1,7 +1,7 @@
 package com.app.emolist.Controller;
 
 import com.app.emolist.DataBase.TaskRepository;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TaskManager {
@@ -35,5 +35,20 @@ public class TaskManager {
 
     public void reload() {
         taskList = TaskRepository.loadTasks();
+    }
+
+    // 依截止日期升冪排序
+    public void sortByDeadDate() {
+        taskList.sort(Comparator.comparing(Task::getDeadline));
+    }
+
+    // 依優先順序排序（假設 getPriority() 回傳 int，數字越小優先）
+    public void sortByPriority() {
+        taskList.sort(Comparator.comparingInt(Task::getPriority));
+    }
+
+    // 依任務名稱排序
+    public void sortByTitle() {
+        taskList.sort(Comparator.comparing(Task::getTitle));
     }
 }
