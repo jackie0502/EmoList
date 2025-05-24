@@ -5,6 +5,8 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 
 import java.util.ArrayList;
@@ -85,8 +87,26 @@ public class CategoryHelper {
             controller.refreshTaskViews();
             highlightTab(category);
         });
+
+        ContextMenu menu = new ContextMenu();
+
+
+        MenuItem delete = new MenuItem("刪除此分類");
+        delete.setOnAction(e -> {
+            controller.getTaskCategoryChoice().getItems().remove(category);
+            refreshCategoryTabs();                  // 重建分類列
+            controller.refreshTaskViews();          // 重新顯示任務
+            if (controller.getCurrentCategoryFilter().equals(category)) {
+                controller.setCurrentCategoryFilter("全部"); // 若刪除當前分類，回到全部
+            }
+        });
+
+        menu.getItems().add(delete);
+        button.setContextMenu(menu);
+
         return button;
     }
+
 
     private void highlightTab(String selected) {
         for (Node node : controller.getCategoryTabs().getChildren()) {
