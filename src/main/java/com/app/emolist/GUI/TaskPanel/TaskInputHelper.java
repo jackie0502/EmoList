@@ -57,7 +57,12 @@ public class TaskInputHelper {
         String recurrence = controller.getRecurrenceChoice().getValue();
         task.setRecurrence(recurrence != null ? recurrence : "無");
 
+        // 新增任務
         controller.getTaskManager().addTask(task);
+
+        // ➤ 加入排序（依截止日）
+        controller.getTaskManager().sortByDeadDate();
+
         hideTaskInputBox();
         controller.refreshTaskViews();
         controller.updatePanels();

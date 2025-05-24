@@ -123,6 +123,9 @@ public class TaskPanelController {
     @FXML
     private void handleAddTask() {
         taskInputHelper.handleAddTask();
+        if (statsController != null) {
+            statsController.updateCharts();
+        }
     }
 
     @FXML
@@ -140,6 +143,9 @@ public class TaskPanelController {
             taskManager.getAllTasks().remove(selected);
             refreshTaskViews();
             updatePanels();
+        }
+        if (statsController != null) {
+            statsController.updateCharts();
         }
     }
 
@@ -173,6 +179,9 @@ public class TaskPanelController {
 
     public void updatePanels() {
         // 若有 stats/calendar 可由這裡串接更新
+        if (statsController != null) {
+            statsController.updateCharts();
+        }
     }
 
     // 🔧 視覺長度工具
