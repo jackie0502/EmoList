@@ -66,6 +66,8 @@ public class TaskViewHelper {
                         actualTask.setCompleted(false);
                         controller.refreshTaskViews();
                         controller.updatePanels();
+                        // 儲存變更
+                        controller.getTaskRepo().saveTasks(controller.getTaskManager().getAllTasks());
                     });
                     menu.getItems().add(cancel);
                     setContextMenu(menu);
@@ -75,6 +77,7 @@ public class TaskViewHelper {
 
                 setGraphic(checkBox);
             }
+
         };
     }
 

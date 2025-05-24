@@ -42,9 +42,9 @@ public class TaskManager {
         taskList.sort(Comparator.comparing(Task::getDeadline, Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
-    // 依優先順序排序（假設 getPriority() 回傳 int，數字越大優先）
-    public void sortByPriority() {
-        taskList.sort(Comparator.comparingInt(Task::getPriority).reversed());
+    // 依優先順序排序（假設 getEmoScore() 回傳 int，數字越大優先）
+    public void sortByEmoScore() {
+        taskList.sort(Comparator.comparingInt(Task::getEmoScore).reversed());
     }
 
     // 依任務名稱排序
