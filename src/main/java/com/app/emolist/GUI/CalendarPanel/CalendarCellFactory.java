@@ -20,6 +20,8 @@ public class CalendarCellFactory {
         this.taskManager = taskManager;
         this.taskPanelController = controller;
         this.refreshCallback = refreshCallback;
+//        taskPanelController.refreshTaskViews(); // 同步顯示任務
+
     }
 
     public VBox createDayCell(LocalDate date) {

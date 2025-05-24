@@ -200,6 +200,9 @@ public class TaskPanelController {
         deadlinePicker.setValue(null);
     }
 
+    public CalendarPanelController getCalendarController() {
+        return calendarController;
+    }
 
     // 👉 getter
     public TaskManager getTaskManager() { return taskManager; }
