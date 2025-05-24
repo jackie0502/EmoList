@@ -1,8 +1,11 @@
 package com.app.emolist.Controller;
 
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.UUID;
 
 public class Task {
+    private final String id;
     private String title;
     private boolean isCompleted;
     private LocalDate deadline;
@@ -12,6 +15,7 @@ public class Task {
     private String recurrence;
 
     public Task(String title) {
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.deadline = LocalDate.MAX;
         this.isCompleted = false;
@@ -22,7 +26,9 @@ public class Task {
         this.recurrence = "無";     // 預設無週期
     }
 
+
     public Task(String title, LocalDate deadline) {
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.deadline = deadline;
         this.isCompleted = false;
@@ -35,6 +41,7 @@ public class Task {
 
     // 可選的建構子，一次傳入所有欄位
     public Task(String title, LocalDate deadline, String category, int priority, String tags, String recurrence) {
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.deadline = deadline;
         this.isCompleted = false;
@@ -44,6 +51,8 @@ public class Task {
         this.recurrence = (recurrence != null ? recurrence : "無");
     }
 
+
+    public String getId() {return id;}
     public String getTitle() {return title;}
     public boolean isCompleted() {return isCompleted;}
     public LocalDate getDeadline() {return deadline;}
@@ -60,5 +69,17 @@ public class Task {
 
     public boolean isRecurring() {return recurrence != null && !recurrence.equals("無");}
     public void toggleCompleted() {isCompleted = !isCompleted;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task task)) return false;
+        return Objects.equals(id, task.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }
