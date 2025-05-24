@@ -33,9 +33,10 @@ public class TaskViewHelper {
                     setGraphic(null);
                 } else {
                     String text = task.getTitle();
-                    if (task.getDeadline() != null && task.getDeadline() !=  LocalDate.MAX) {
+                    if (task.getDeadline() != null && task.getDeadline().isBefore(LocalDate.now().plusDays(500))) {
                         text += " (" + task.getDeadline() + ")";
                     }
+
 
                     CheckBox checkBox = new CheckBox(text);
                     checkBox.setSelected(task.isCompleted());
