@@ -104,6 +104,8 @@ public class TaskPanelController {
         selectedTasks.clear();
         refreshTaskViews();
         updatePanels(); // 更新日曆與統計圖表（如果有設）
+
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
     public void setCalendarController(CalendarPanelController calendarController) {
@@ -168,6 +170,8 @@ public class TaskPanelController {
         if (statsController != null) {
             statsController.updateCharts();
         }
+
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
     @FXML
@@ -190,6 +194,8 @@ public class TaskPanelController {
         if (statsController != null) {
             statsController.updateCharts();
         }
+
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
 
