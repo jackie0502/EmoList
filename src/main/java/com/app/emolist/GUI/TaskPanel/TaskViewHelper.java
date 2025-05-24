@@ -3,8 +3,12 @@ package com.app.emolist.GUI.TaskPanel;
 import com.app.emolist.Controller.Task;
 import com.app.emolist.GUI.TaskPanelController;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +38,10 @@ public class TaskViewHelper {
                     return;
                 }
 
-                // 取得原始任務物件（用 ID 比對）
                 Task actualTask = controller.getTaskManager().getAllTasks().stream()
                         .filter(t -> t.getId().equals(task.getId()))
                         .findFirst()
-                        .orElse(task); // 如果找不到就用目前這個（但通常會找到）
+                        .orElse(task);
 
                 String text = actualTask.getTitle();
                 if (actualTask.getDeadline() != null) {
@@ -56,10 +59,25 @@ public class TaskViewHelper {
                     }
                 });
 
+                if (completed) {
+                    ContextMenu menu = new ContextMenu();
+                    MenuItem cancel = new MenuItem("取消完成");
+                    cancel.setOnAction(e -> {
+                        actualTask.setCompleted(false);
+                        controller.refreshTaskViews();
+                        controller.updatePanels();
+                    });
+                    menu.getItems().add(cancel);
+                    setContextMenu(menu);
+                } else {
+                    setContextMenu(null);
+                }
+
                 setGraphic(checkBox);
             }
         };
     }
+
 
 
     public void refreshTaskViews() {
