@@ -11,6 +11,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDate;
+
 public class TaskPanelController {
 
     @FXML private HBox categoryTabs;
@@ -162,6 +164,9 @@ public class TaskPanelController {
         taskViewHelper.refreshTaskViews();
     }
 
+//    public LocalDate getDeadLine(){
+//        deadlineHelper
+//    }
     public void checkDeadlines() {
         deadlineHelper.checkDeadlines();
     }
@@ -183,6 +188,18 @@ public class TaskPanelController {
         }
         return length;
     }
+
+    @FXML private DatePicker deadlinePicker;
+
+    public DatePicker getTaskDeadlinePicker() {
+        return deadlinePicker;
+    }
+
+    @FXML
+    private void handleClearDeadline() {
+        deadlinePicker.setValue(null);
+    }
+
 
     // 👉 getter
     public TaskManager getTaskManager() { return taskManager; }

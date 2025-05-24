@@ -5,26 +5,6 @@
     -fx-border-color: #ccc;
     -fx-border-radius: 8;
 }
-/*.calendar-cell {
-    -fx-border-color: #ccc;
-    -fx-background-color: #fefefe;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -fx-cursor: hand;
-}
-
-.calendar-cell:hover {
-    -fx-background-color: #d0e7ff;
-}*/
-
-/* 6: CalendarPanel 樣式 */
-/*.calendar-panel {
-    -fx-background-color: #e0f7fa;
-    -fx-padding: 15;
-    -fx-border-color: #00acc1;
-    -fx-border-radius: 8;
-}*/
-/* calendar-task-dialog.css */
 
 .container {
     -fx-background-color: #FFFFFF;
