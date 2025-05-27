@@ -9,8 +9,9 @@ module com.app.emolist {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
-    requires com.almasb.fxgl.all;
+//    requires com.almasb.fxgl.all;
     requires com.google.gson;
+    requires java.desktop;
 
     // 開放 GUI 和 Controller 給 javafx.fxml 反射使用
     opens com.app.emolist to javafx.fxml;

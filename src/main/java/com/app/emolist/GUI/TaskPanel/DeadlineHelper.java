@@ -3,18 +3,19 @@ package com.app.emolist.GUI.TaskPanel;
 import com.app.emolist.Controller.Task;
 import com.app.emolist.GUI.TaskPanelController;
 import javafx.scene.control.Alert;
-
 import java.time.LocalDate;
+import com.app.emolist.GUI.NotificationHelper;  // 匯入新工具類
 
 public class DeadlineHelper {
 
-    private final TaskPanelController controller;
+    private static TaskPanelController controller = new TaskPanelController();
 
     public DeadlineHelper(TaskPanelController controller) {
         this.controller = controller;
     }
 
-    public void checkDeadlines() {
+
+    public static void checkDeadlines() {
         LocalDate today = LocalDate.now();
         StringBuilder warnings = new StringBuilder();
 
@@ -25,6 +26,9 @@ public class DeadlineHelper {
                 } else if (task.getDeadline().equals(today)) {
                     warnings.append("【今天截止】").append(task.getTitle()).append("（").append(task.getDeadline()).append("）\n");
                 }
+                else if(task.getDeadline().isBefore(LocalDate.now().plusDays(2))){
+                    warnings.append("【即將截止】").append(task.getTitle()).append("（").append(task.getDeadline()).append("）\n");
+                }
             }
         }
 
@@ -34,6 +38,8 @@ public class DeadlineHelper {
             alert.setHeaderText("以下任務已到期或即將到期：");
             alert.setContentText(warnings.toString());
             alert.showAndWait();
+            NotificationHelper.showSystemNotification("任務提醒", warnings.toString());
         }
+
     }
 }
