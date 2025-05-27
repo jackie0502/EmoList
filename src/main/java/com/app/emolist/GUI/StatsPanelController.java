@@ -5,7 +5,9 @@ import com.app.emolist.Controller.TaskManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.chart.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
@@ -49,13 +51,30 @@ public class StatsPanelController {
         // 延遲設定顏色，避免節點尚未初始化造成 null
         javafx.application.Platform.runLater(() -> {
             for (PieChart.Data data : pieData) {
+                String color;
                 if (data.getName().equals("已完成")) {
-                    data.getNode().setStyle("-fx-pie-color: #228B22;");  // 綠色
-                } else if (data.getName().equals("未完成")) {
-                    data.getNode().setStyle("-fx-pie-color: #D0021B;");  // 紅色
+                    color = "#228B22";  // 綠色
+                } else {
+                    color = "#D0021B";  // 紅色
+                }
+
+                data.getNode().setStyle("-fx-pie-color: " + color + ";");
+
+                // 設定 legend 文字前面的小圓形顏色
+                Node node = data.getNode();
+                if (node != null && node.getParent() != null) {
+                    for (Node legend : pieChart.lookupAll(".chart-legend-item")) {
+                        if (legend instanceof Label label && label.getText().equals(data.getName())) {
+                            Node symbol = label.getGraphic(); // 通常是小圓形
+                            if (symbol != null) {
+                                symbol.setStyle("-fx-background-color: " + color + ";");
+                            }
+                        }
+                    }
                 }
             }
         });
+
 
         // 壓力圖（LineChart）資料處理
         // 壓力圖（LineChart）資料處理（限定 ±x 天）
