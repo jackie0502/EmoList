@@ -15,7 +15,7 @@ import java.util.Map;
 public class PressureDialog {
 
     private final List<Task> taskList;
-    private final Map<Task, ComboBox<Integer>> inputMap = new HashMap<>();
+    private final Map<Task, ToggleGroup> inputMap = new HashMap<>();
 
     public PressureDialog(List<Task> taskList) {
         this.taskList = taskList;
@@ -31,13 +31,21 @@ public class PressureDialog {
 
         for (Task task : taskList) {
             Label label = new Label(task.getTitle());
-            ComboBox<Integer> comboBox = new ComboBox<>();
-            comboBox.getItems().addAll(1, 2, 3, 4, 5);
-            comboBox.setPromptText("選擇壓力指數");
 
-            inputMap.put(task, comboBox);
+            HBox radioBox = new HBox(15);
+            ToggleGroup group = new ToggleGroup();
 
-            VBox taskBox = new VBox(5, label, comboBox);
+            for (int i = 1; i <= 5; i++) {
+                RadioButton rb = new RadioButton(String.valueOf(i));
+                rb.setToggleGroup(group);
+                radioBox.getChildren().add(rb);
+            }
+
+            inputMap.put(task, group);
+
+            Label stressLabel = new Label("壓力指數:");
+            VBox taskBox = new VBox(5, label, stressLabel, radioBox);
+
             taskBox.setPadding(new Insets(5));
             taskBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5;");
             root.getChildren().add(taskBox);
@@ -48,16 +56,16 @@ public class PressureDialog {
 
         root.getChildren().add(confirm);
 
-        Scene scene = new Scene(root, 400, 100 + taskList.size() * 80);
+        Scene scene = new Scene(root, 420, 120 + taskList.size() * 60);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
 
         // 收集輸入值
         Map<Task, Integer> result = new HashMap<>();
-        for (Map.Entry<Task, ComboBox<Integer>> entry : inputMap.entrySet()) {
-            Integer value = entry.getValue().getValue();
-            if (value != null) {
-                result.put(entry.getKey(), value);
+        for (Map.Entry<Task, ToggleGroup> entry : inputMap.entrySet()) {
+            Toggle selected = entry.getValue().getSelectedToggle();
+            if (selected instanceof RadioButton rb) {
+                result.put(entry.getKey(), Integer.parseInt(rb.getText()));
             }
         }
 
