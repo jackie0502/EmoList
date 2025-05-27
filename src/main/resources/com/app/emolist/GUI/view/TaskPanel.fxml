@@ -40,8 +40,8 @@
         <HBox spacing="10">
             <Button text="＋新增任務" onAction="#handleShowTaskInput" />
             <Button text="刪除任務" onAction="#handleDeleteTask" />
-            <Button text="匯出任務" onAction="#handleExportTasks" />
             <Button text="完成任務" onAction="#handleCompleteSelectedTasks" />
+            <Button text="取消完成" onAction="#handleUncompleteTask" />
 
         </HBox>
 
@@ -50,7 +50,7 @@
             <TextField fx:id="inputField" promptText="輸入任務..." />
             <HBox spacing="10">
                 <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
-                <ComboBox fx:id="EmoScoreChoice" promptText="Emo分數" />
+                <ComboBox fx:id="priorityChoice" promptText="Emo分數" />
                 <ComboBox fx:id="recurrenceChoice" promptText="週期" />
                 <DatePicker fx:id="deadlinePicker" promptText="截止日期" />
             </HBox>
