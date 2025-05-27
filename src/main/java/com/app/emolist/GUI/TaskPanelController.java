@@ -27,7 +27,7 @@ public class TaskPanelController {
     @FXML private ListView<Task> completedListView;
     @FXML private TextField searchField;
     @FXML private TextField inputField;
-    @FXML private ComboBox<String> EmoScoreChoice;
+    @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
     @FXML private CheckBox darkModeToggle;
     @FXML private Region categorySpacer;
@@ -54,8 +54,8 @@ public class TaskPanelController {
     private void initialize() {
         taskCategoryChoice.getItems().addAll("工作", "娛樂", "無");
         taskCategoryChoice.getSelectionModel().select("無");
-        EmoScoreChoice.getItems().addAll("低", "中", "高");
-        EmoScoreChoice.getSelectionModel().select("中");
+        priorityChoice.getItems().addAll("低", "中", "高");
+        priorityChoice.getSelectionModel().select("中");
 
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
         recurrenceChoice.getSelectionModel().select("無");
@@ -292,7 +292,7 @@ public class TaskPanelController {
     public TextField getSearchField() { return searchField; }
     public TextField getInputField() { return inputField; }
     public ComboBox<String> getTaskCategoryChoice() { return taskCategoryChoice; }
-    public ComboBox<String> getEmoScoreChoice() { return EmoScoreChoice; }
+    public ComboBox<String> getPriorityChoice() { return priorityChoice; }
     public ComboBox<String> getRecurrenceChoice() { return recurrenceChoice; }
 
     public ListView<Task> getUncompletedListView() { return uncompletedListView; }
