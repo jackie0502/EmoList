@@ -40,48 +40,53 @@ public class StatsPanelController {
         int completedCount = (int) tasks.stream().filter(Task::isCompleted).count();
         int incompleteCount = total - completedCount;
 
-        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList(
-                new PieChart.Data("已完成", completedCount),
-                new PieChart.Data("未完成", incompleteCount)
-        );
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+        PieChart.Data completed = new PieChart.Data("已完成", completedCount);
+        PieChart.Data incomplete = new PieChart.Data("未完成", incompleteCount);
+        pieData.addAll(completed, incomplete);
         pieChart.setData(pieData);
 
-        for (PieChart.Data data : pieData) {
-            if (data.getName().equals("已完成")) {
-                data.getNode().setStyle("-fx-pie-color: #228B22;");  // 原諒的顏色
-            } else if (data.getName().equals("未完成")) {
-                data.getNode().setStyle("-fx-pie-color: #D0021B;");  // 警示顏色
+        // 延遲設定顏色，避免節點尚未初始化造成 null
+        javafx.application.Platform.runLater(() -> {
+            for (PieChart.Data data : pieData) {
+                if (data.getName().equals("已完成")) {
+                    data.getNode().setStyle("-fx-pie-color: #228B22;");  // 綠色
+                } else if (data.getName().equals("未完成")) {
+                    data.getNode().setStyle("-fx-pie-color: #D0021B;");  // 紅色
+                }
             }
-        }
+        });
+
+        // 壓力圖（LineChart）資料處理
+        // 壓力圖（LineChart）資料處理（限定 ±x 天）
         Map<LocalDate, Integer> pressureMap = new TreeMap<>();
+        Map<LocalDate, Integer> taskCountMap = new TreeMap<>();
+
+        LocalDate today = LocalDate.now();
+        LocalDate from = today.minusDays(15);
+        LocalDate to = today.plusDays(15);
+
         for (Task t : tasks) {
             LocalDate date = t.getDeadline();
-            pressureMap.put(date, pressureMap.getOrDefault(date, 0) + t.getPriority());
+            if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
+
+            pressureMap.put(date, pressureMap.getOrDefault(date, 0) + t.getEmoScore());
+            taskCountMap.put(date, taskCountMap.getOrDefault(date, 0) + 1);
         }
 
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("壓力指數");
+        series.setName("壓力指數（平均）");
+
         for (Map.Entry<LocalDate, Integer> entry : pressureMap.entrySet()) {
-            series.getData().add(new XYChart.Data<>(entry.getKey().toString(), entry.getValue()));
+            LocalDate date = entry.getKey();
+            int totalPressure = entry.getValue();
+            int taskCount = taskCountMap.get(date); // 此處不會為 null
+            double averagePressure = (double) totalPressure / taskCount;
+            series.getData().add(new XYChart.Data<>(date.toString(), averagePressure));
         }
 
         lineChart.getData().clear();
         lineChart.getData().add(series);
     }
 
-    public void applyTheme(boolean dark) {
-        if (dark) {
-            view.setStyle("-fx-background-color: #2b2b2b;");
-            ((CategoryAxis) lineChart.getXAxis()).setTickLabelFill(Color.WHITE);
-            ((NumberAxis) lineChart.getYAxis()).setTickLabelFill(Color.WHITE);
-            pieChart.lookup(".chart-title").setStyle("-fx-text-fill: #FFFFFF;");
-            lineChart.lookup(".chart-title").setStyle("-fx-text-fill: #FFFFFF;");
-        } else {
-            view.setStyle("");
-            ((CategoryAxis) lineChart.getXAxis()).setTickLabelFill(Color.BLACK);
-            ((NumberAxis) lineChart.getYAxis()).setTickLabelFill(Color.BLACK);
-            pieChart.lookup(".chart-title").setStyle("-fx-text-fill: #000000;");
-            lineChart.lookup(".chart-title").setStyle("-fx-text-fill: #000000;");
-        }
-    }
 }

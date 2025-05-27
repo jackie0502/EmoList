@@ -26,7 +26,7 @@ public class TaskPanelController {
     @FXML private ListView<Task> completedListView;
     @FXML private TextField searchField;
     @FXML private TextField inputField;
-    @FXML private ComboBox<String> priorityChoice;
+    @FXML private ComboBox<String> EmoScoreChoice;
     @FXML private ComboBox<String> recurrenceChoice;
     @FXML private CheckBox darkModeToggle;
     @FXML private Region categorySpacer;
@@ -53,8 +53,8 @@ public class TaskPanelController {
     private void initialize() {
         taskCategoryChoice.getItems().addAll("工作", "娛樂", "無");
         taskCategoryChoice.getSelectionModel().select("無");
-        priorityChoice.getItems().addAll("低", "中", "高");
-        priorityChoice.getSelectionModel().select("中");
+        EmoScoreChoice.getItems().addAll("低", "中", "高");
+        EmoScoreChoice.getSelectionModel().select("中");
 
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
         recurrenceChoice.getSelectionModel().select("無");
@@ -97,22 +97,27 @@ public class TaskPanelController {
         for (Task task : selectedTasks) {
             task.setCompleted(true);
         }
-
+        updatePanels();
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 更新日曆
+        }
         selectedTasks.clear();
         refreshTaskViews();
         updatePanels(); // 更新日曆與統計圖表（如果有設）
 
-
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
-
 
     public void setCalendarController(CalendarPanelController calendarController) {
         this.calendarController = calendarController;
+        calendarController.setTaskManager(this.taskManager); // 👈 加上這行
     }
 
     public void setStatsController(StatsPanelController statsController) {
         this.statsController = statsController;
+        this.statsController.setTaskManager(this.taskManager); // 加上這行，讓 StatsPanel 有資料
     }
+
 
     @FXML
     private void handleShowAddCategory() {
@@ -157,6 +162,16 @@ public class TaskPanelController {
         if (statsController != null) {
             statsController.updateCharts();
         }
+        refreshTaskViews();
+        updatePanels(); // 👈 這裡會更新日曆
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 重複呼叫
+        }
+        if (statsController != null) {
+            statsController.updateCharts();
+        }
+
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
     @FXML
@@ -172,7 +187,15 @@ public class TaskPanelController {
 
         selectedTasks.clear();
         refreshTaskViews();
-        updatePanels();
+        updatePanels(); // 👈 這裡會更新日曆
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 重複呼叫
+        }
+        if (statsController != null) {
+            statsController.updateCharts();
+        }
+
+        taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
 
@@ -208,6 +231,9 @@ public class TaskPanelController {
         // 若有 stats/calendar 可由這裡串接更新
         if (statsController != null) {
             statsController.updateCharts();
+        }
+        if (calendarController != null) {
+            calendarController.refreshCalendarView();  // <-- 這行必須有
         }
     }
 
@@ -253,7 +279,7 @@ public class TaskPanelController {
     public TextField getSearchField() { return searchField; }
     public TextField getInputField() { return inputField; }
     public ComboBox<String> getTaskCategoryChoice() { return taskCategoryChoice; }
-    public ComboBox<String> getPriorityChoice() { return priorityChoice; }
+    public ComboBox<String> getEmoScoreChoice() { return EmoScoreChoice; }
     public ComboBox<String> getRecurrenceChoice() { return recurrenceChoice; }
 
     public ListView<Task> getUncompletedListView() { return uncompletedListView; }

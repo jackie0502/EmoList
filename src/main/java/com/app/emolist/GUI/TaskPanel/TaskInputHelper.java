@@ -18,7 +18,7 @@ public class TaskInputHelper {
         controller.getTaskInputBox().setManaged(true);
         controller.getInputField().clear();
         controller.getTaskCategoryChoice().getSelectionModel().select("無");
-        controller.getPriorityChoice().getSelectionModel().select("中");
+        controller.getEmoScoreChoice().getSelectionModel().select("中");
         controller.getRecurrenceChoice().getSelectionModel().select("無");
     }
 
@@ -38,17 +38,13 @@ public class TaskInputHelper {
         } else {
             task = new Task(title);
         }
-//        LocalDate deadline =  controller.getDeadline()
-//        task = new Task(title);
-//        Task task = new Task(title, deadline);
-//        task.setCreatedDate(LocalDate.now());
 
         String category = controller.getTaskCategoryChoice().getValue();
         task.setCategory(category != null ? category : "無");
         task.setTags(category);
 
-        String priority = controller.getPriorityChoice().getValue();
-        task.setPriority(switch (priority) {
+        String EmoScore = controller.getEmoScoreChoice().getValue();
+        task.setEmoScore(switch (EmoScore) {
             case "高" -> 3;
             case "中" -> 2;
             default -> 1;

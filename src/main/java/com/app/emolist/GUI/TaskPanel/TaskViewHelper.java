@@ -44,7 +44,7 @@ public class TaskViewHelper {
                         .orElse(task);
 
                 String text = actualTask.getTitle();
-                if (actualTask.getDeadline() != null) {
+                if (task.getDeadline() != null && task.getDeadline().isBefore(LocalDate.now().plusDays(500))) {
                     text += " (" + actualTask.getDeadline() + ")";
                 }
 
@@ -66,6 +66,8 @@ public class TaskViewHelper {
                         actualTask.setCompleted(false);
                         controller.refreshTaskViews();
                         controller.updatePanels();
+                        // 儲存變更
+                        controller.getTaskRepo().saveTasks(controller.getTaskManager().getAllTasks());
                     });
                     menu.getItems().add(cancel);
                     setContextMenu(menu);
@@ -75,6 +77,7 @@ public class TaskViewHelper {
 
                 setGraphic(checkBox);
             }
+
         };
     }
 
