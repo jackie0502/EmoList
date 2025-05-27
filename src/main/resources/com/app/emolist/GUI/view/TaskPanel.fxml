@@ -50,7 +50,7 @@
             <TextField fx:id="inputField" promptText="輸入任務..." />
             <HBox spacing="10">
                 <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
-                <ComboBox fx:id="EmoScoreChoice" promptText="Emo分數" />
+                <ComboBox fx:id="priorityChoice" promptText="Emo分數" />
                 <ComboBox fx:id="recurrenceChoice" promptText="週期" />
                 <DatePicker fx:id="deadlinePicker" promptText="截止日期" />
             </HBox>
