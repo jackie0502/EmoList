@@ -13,6 +13,7 @@ public class Task {
     private int EmoScore;
     private String tags;
     private String recurrence;
+    private int stressLevel = 0;
 
     public Task(String title) {
         this.id = UUID.randomUUID().toString();
@@ -60,12 +61,14 @@ public class Task {
     public int getEmoScore() {return EmoScore;}
     public String getTags() {return tags;}
     public String getRecurrence() {return recurrence;}
+    public int getStressLevel() { return stressLevel; }
 
     public void setCompleted(boolean completed) {this.isCompleted = completed;}
     public void setCategory(String category) {this.category = category;}
     public void setEmoScore(int EmoScore) {this.EmoScore = EmoScore;}
     public void setTags(String tags) {this.tags = tags;}
     public void setRecurrence(String recurrence) {this.recurrence = recurrence;}
+    public void setStressLevel(int level) { this.stressLevel = level; }
 
     public boolean isRecurring() {return recurrence != null && !recurrence.equals("無");}
     public void toggleCompleted() {isCompleted = !isCompleted;}

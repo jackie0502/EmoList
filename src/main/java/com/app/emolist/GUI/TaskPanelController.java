@@ -8,6 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.time.LocalDate;
@@ -92,19 +95,28 @@ public class TaskPanelController {
 
         if (selectedTasks.isEmpty()) return;
 
-        for (Task task : selectedTasks) {
+        // ✅ 顯示壓力指數輸入視窗
+        PressureDialog dialog = new PressureDialog(new ArrayList<>(selectedTasks));
+        Map<Task, Integer> pressureMap = dialog.showAndWait();
+        if (pressureMap == null || pressureMap.isEmpty()) return;
+
+        for (Task task : pressureMap.keySet()) {
             task.setCompleted(true);
+            task.setStressLevel(pressureMap.get(task)); // ✅ 紀錄壓力指數
         }
+
         updatePanels();
         if (calendarController != null) {
             calendarController.refreshCalendarView(); // 👈 更新日曆
         }
+
         selectedTasks.clear();
         refreshTaskViews();
         updatePanels(); // 更新日曆與統計圖表（如果有設）
 
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
+
 
     public void setCalendarController(CalendarPanelController calendarController) {
         this.calendarController = calendarController;
