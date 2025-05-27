@@ -1,10 +1,8 @@
 package com.app.emolist.GUI;
-
 import com.app.emolist.Controller.Task;
 import com.app.emolist.Controller.TaskManager;
 import com.app.emolist.DataBase.TaskRepository;
 import com.app.emolist.GUI.TaskPanel.*;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
