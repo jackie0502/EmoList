@@ -32,10 +32,10 @@
             <PieChart fx:id="pieChart" prefWidth="300.0" prefHeight="300.0" />
             <LineChart fx:id="lineChart" prefWidth="450.0" prefHeight="300.0">
                 <xAxis>
-                    <CategoryAxis label="日期"/>
+                    <CategoryAxis label=""/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="壓力指數"/>
+                    <NumberAxis label="壓力分數"/>
                 </yAxis>
             </LineChart>
         </HBox>

@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,8 @@ public class StatsPanelController {
         });
 
         // 壓力圖（LineChart）資料處理
+        lineChart.getData().clear();
+
         LocalDate today = LocalDate.now();
         LocalDate from ;
         LocalDate to ;
@@ -97,18 +100,19 @@ public class StatsPanelController {
         switch (selectedRange) {
             case "每日":
                 from = today.minusDays(6);
-                to = today.plusDays(1);
+                to = today;
                 Map<LocalDate, Integer> dailyPressureMap = new TreeMap<>();
                 for (Task t : tasks) {
                     LocalDate date = t.getDeadline();
                     if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
                     dailyPressureMap.compute(date, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
                 }
-                LocalDate cursor = from;
-                while (!cursor.isAfter(to)) {
-                    dailyPressureMap.putIfAbsent(cursor, 0);
-                    cursor = cursor.plusDays(1);
+                // 補齊空日
+                for (LocalDate d = from; !d.isAfter(to); d = d.plusDays(1)) {
+                    dailyPressureMap.putIfAbsent(d, 0);
                 }
+                applyYAxisScale(dailyPressureMap);
+
                 XYChart.Series<String, Number> dailySeries = new XYChart.Series<>();
                 dailySeries.setName("每日壓力總和");
                 for (Map.Entry<LocalDate, Integer> entry : dailyPressureMap.entrySet()) {
@@ -120,8 +124,8 @@ public class StatsPanelController {
                 lineChart.getData().add(dailySeries);
                 break;
             case "每週":
-                from = today.minusDays(25);
-                to = today.plusDays(5);
+                from = today.minusWeeks(5).with(DayOfWeek.MONDAY);
+                to = today;
                 // 統計每週壓力總和
                 Map<LocalDate, Integer> weeklyPressureMap = new TreeMap<>();
                 for (Task t : tasks) {
@@ -131,11 +135,12 @@ public class StatsPanelController {
                     LocalDate weekStart = date.with(java.time.DayOfWeek.MONDAY);
                     weeklyPressureMap.compute(weekStart, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
                 }
-                 cursor = from;
-                while (!cursor.isAfter(to)) {
-                    weeklyPressureMap.putIfAbsent(cursor, 0);
-                    cursor = cursor.plusDays(1);
+                // 補齊每週（週一為 key）
+                for (LocalDate d = from.with(java.time.DayOfWeek.MONDAY); !d.isAfter(to); d = d.plusWeeks(1)) {
+                    weeklyPressureMap.putIfAbsent(d, 0);
                 }
+                applyYAxisScale(weeklyPressureMap);
+
                 // 建立折線圖資料（每週一筆）
                 XYChart.Series<String, Number> series = new XYChart.Series<>();
                 series.setName("每週壓力總和");
@@ -148,7 +153,8 @@ public class StatsPanelController {
                 lineChart.getData().add(series);
                 break;
             case "每月":
-                from = today.minusDays(330);to = today.plusDays(30);
+                from = today.minusMonths(11).withDayOfMonth(1);
+                to = today;
                 Map<LocalDate, Integer> monthlyPressureMap = new TreeMap<>();
                 for (Task t : tasks) {
                     LocalDate date = t.getDeadline();
@@ -157,11 +163,12 @@ public class StatsPanelController {
                     LocalDate monthStart = date.withDayOfMonth(1);
                     monthlyPressureMap.compute(monthStart, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
                 }
-                 cursor = from;
-                while (!cursor.isAfter(to)) {
-                    monthlyPressureMap.putIfAbsent(cursor, 0);
-                    cursor = cursor.plusDays(1);
+                // 補齊每月（每月 1 號為 key）
+                for (LocalDate d = from.withDayOfMonth(1); !d.isAfter(to); d = d.plusMonths(1)) {
+                    monthlyPressureMap.putIfAbsent(d, 0);
                 }
+                applyYAxisScale(monthlyPressureMap);
+
                 XYChart.Series<String, Number> monthlySeries = new XYChart.Series<>();
                 monthlySeries.setName("每月壓力總和");
                 for (Map.Entry<LocalDate, Integer> entry : monthlyPressureMap.entrySet()) {
@@ -174,4 +181,17 @@ public class StatsPanelController {
                 break;
         }
     }
+    private void applyYAxisScale(Map<LocalDate, Integer> dataMap) {
+        NumberAxis yAxis = (NumberAxis) lineChart.getYAxis();
+        int max = dataMap.values().stream().max(Integer::compareTo).orElse(10);
+
+        double upper = Math.ceil(max / 10.0) * 10; // 向上取整至10的倍數
+        if (upper == 0) upper = 10; // 防止為零
+
+        yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(0);
+        yAxis.setUpperBound(upper);
+        yAxis.setTickUnit(upper / 5); // 5 格為一單位（可視需求調整）
+    }
+
 }
