@@ -31,6 +31,7 @@ public class PressureDialog {
 
         for (Task task : taskList) {
             Label label = new Label(task.getTitle());
+            Label stressLabel = new Label("壓力指數:");
 
             HBox radioBox = new HBox(15);
             ToggleGroup group = new ToggleGroup();
@@ -43,9 +44,7 @@ public class PressureDialog {
 
             inputMap.put(task, group);
 
-            Label stressLabel = new Label("壓力指數:");
             VBox taskBox = new VBox(5, label, stressLabel, radioBox);
-
             taskBox.setPadding(new Insets(5));
             taskBox.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5;");
             root.getChildren().add(taskBox);
@@ -53,10 +52,13 @@ public class PressureDialog {
 
         Button confirm = new Button("確認完成");
         confirm.setOnAction(e -> dialogStage.close());
-
         root.getChildren().add(confirm);
 
-        Scene scene = new Scene(root, 420, 120 + taskList.size() * 60);
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefViewportHeight(550);
+
+        Scene scene = new Scene(scrollPane, 450, 550);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
 
