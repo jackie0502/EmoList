@@ -4,6 +4,7 @@ import com.app.emolist.Controller.TaskManager;
 import com.app.emolist.DataBase.TaskRepository;
 import com.app.emolist.GUI.TaskPanel.*;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -29,7 +30,8 @@ public class TaskPanelController {
     @FXML private TextField inputField;
     @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
-    @FXML private CheckBox darkModeToggle;
+    @FXML private Button darkModeButton;
+    private boolean isDarkMode = false;
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
 
@@ -256,15 +258,20 @@ public class TaskPanelController {
 
     @FXML
     private void toggleDarkMode() {
-        boolean dark = darkModeToggle.isSelected();
-        if (uncompletedListView.getScene() != null) {
-            if (dark) {
-                uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
-            } else {
-                uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
-            }
+        Scene scene = darkModeButton.getScene();
+        if (scene == null) return;
+
+        isDarkMode = !isDarkMode;
+
+        if (isDarkMode) {
+            uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
+            darkModeButton.setText("淺色模式");
+        } else {
+            uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
+            darkModeButton.setText("深色模式");
         }
     }
+
 
     public void refreshTaskViews() {
         taskViewHelper.refreshTaskViews();
