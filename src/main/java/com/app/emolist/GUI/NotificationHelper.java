@@ -11,22 +11,23 @@ public class NotificationHelper {
             return;
         }
 
-        try {
-            SystemTray tray = SystemTray.getSystemTray();
-            Image image = Toolkit.getDefaultToolkit().createImage(""); // 可設為 null 或指定 icon 圖片
-            TrayIcon trayIcon = new TrayIcon(image, "Emolist 通知");
-            trayIcon.setImageAutoSize(true);
-            trayIcon.setToolTip("Emolist 任務提醒");
-            tray.add(trayIcon);
+        new Thread(() -> {
+            try {
+                SystemTray tray = SystemTray.getSystemTray();
+                Image image = Toolkit.getDefaultToolkit().createImage(""); // 可指定 icon 圖片或保持為空
+                TrayIcon trayIcon = new TrayIcon(image, "Emolist 通知");
+                trayIcon.setImageAutoSize(true);
+                trayIcon.setToolTip("Emolist 任務提醒");
+                tray.add(trayIcon);
 
-            trayIcon.displayMessage(title, message, MessageType.INFO);
+                trayIcon.displayMessage(title, message, MessageType.INFO);
 
-            // 自動移除圖示（可選）
-            Thread.sleep(3000);
-            tray.remove(trayIcon);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                // 背景線程等待幾秒後移除 tray icon
+                Thread.sleep(3000);
+                tray.remove(trayIcon);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start(); // 啟動背景執行緒
     }
 }
