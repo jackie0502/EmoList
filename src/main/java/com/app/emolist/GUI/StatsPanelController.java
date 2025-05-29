@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -20,6 +21,8 @@ public class StatsPanelController {
     @FXML private HBox view;
     @FXML private PieChart pieChart;
     @FXML private LineChart<String, Number> lineChart;
+    @FXML
+    private ComboBox<String> rangeComboBox;
 
     private TaskManager taskManager;
 
