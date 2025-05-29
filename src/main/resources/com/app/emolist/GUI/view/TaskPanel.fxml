@@ -57,7 +57,12 @@
             <HBox spacing="10">
                 <Button text="確認新增" onAction="#handleAddTask" />
                 <Button text="取消" onAction="#handleCancelAddTask" />
+                <Button text="新增通知" onAction="#handleToggleNotificationButton" />
                 <Button text="清除日期" onAction="#handleClearDeadline" />
+            </HBox>
+            <HBox spacing="10" visible="false" fx:id="notificationBox" managed="false">
+                <Button text="確認" onAction="#handleAddNotification" />
+                <Button text="取消" onAction="#handleCancelAddNotification" />
             </HBox>
         </VBox>
 

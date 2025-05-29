@@ -30,8 +30,9 @@ public class TaskPanelController {
     @FXML private TextField inputField;
     @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
+    @FXML private Button notificationButton;
+    @FXML private HBox notificationBox;
     @FXML private Button darkModeButton;
-    private boolean isDarkMode = false;
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
 
@@ -50,6 +51,7 @@ public class TaskPanelController {
     public Set<Task> getSelectedTasks() { return selectedTasks; }
     private CalendarPanelController calendarController;
     private StatsPanelController statsController;
+    private boolean isDarkMode = false;
 
 
     @FXML
@@ -61,7 +63,6 @@ public class TaskPanelController {
 
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
         recurrenceChoice.getSelectionModel().select("無");
-
 
         categoryHelper.refreshCategoryTabs();
         taskInputHelper.hideTaskInputBox();
@@ -250,6 +251,21 @@ public class TaskPanelController {
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
+    @FXML
+    private void handleToggleNotificationButton() {
+        notificationBox.setVisible(true);
+        notificationBox.setManaged(true);
+    }
+
+    @FXML void handleAddNotification(){
+        notificationBox.setVisible(false);
+        notificationBox.setManaged(false);
+    }
+
+    @FXML void handleCancelAddNotification(){
+        notificationBox.setVisible(false);
+        notificationBox.setManaged(false);
+    }
 
     @FXML
     private void handleExportTasks() {
