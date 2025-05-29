@@ -2,6 +2,7 @@ package com.app.emolist.GUI;
 
 import com.app.emolist.Controller.TaskManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -61,6 +62,10 @@ public class MainView extends Application {
 
             // 啟動時檢查 Deadline
             taskController.checkDeadlines();
+            primaryStage.setOnCloseRequest(event -> {
+                Platform.exit();  // 正常關閉 JavaFX 執行緒
+                System.exit(0);   // 強制關閉 JVM（保險用）
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
