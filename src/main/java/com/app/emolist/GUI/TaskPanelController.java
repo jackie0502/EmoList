@@ -100,6 +100,38 @@ public class TaskPanelController {
             calendarController.refreshCalendarView(); // 👈 更新日曆
         }
 
+        for (Task task : selectedTasks) {
+            task.setCompleted(true);
+
+            // debug
+            System.out.println("✔️ 完成任務: " + task.getTitle());
+            System.out.println("Recurrence: " + task.getRecurrence());
+            System.out.println("Deadline: " + task.getDeadline());
+
+            if (!"無".equals(task.getRecurrence()) && task.getDeadline() != null) {
+                LocalDate nextDeadline = switch (task.getRecurrence()) {
+                    case "每天" -> task.getDeadline().plusDays(1);
+                    case "每週" -> task.getDeadline().plusWeeks(1);
+                    case "每月" -> task.getDeadline().plusMonths(1);
+                    default -> null;
+                };
+
+                if (nextDeadline != null) {
+                    Task newTask = new Task(
+                            task.getTitle(),
+                            nextDeadline,
+                            task.getCategory(),
+                            task.getPriority(),
+                            task.getTags(),
+                            task.getRecurrence()
+                    );
+                    taskManager.addTask(newTask);
+                    System.out.println("✅ 新增週期任務: " + newTask.getTitle() + " / " + newTask.getDeadline());
+                }
+            }
+        }
+
+
         selectedTasks.clear();
         refreshTaskViews();
         updatePanels(); // 更新日曆與統計圖表（如果有設）
