@@ -4,6 +4,7 @@ import com.app.emolist.Controller.TaskManager;
 import com.app.emolist.DataBase.TaskRepository;
 import com.app.emolist.GUI.TaskPanel.*;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -29,7 +30,9 @@ public class TaskPanelController {
     @FXML private TextField inputField;
     @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
-    @FXML private CheckBox darkModeToggle;
+    @FXML private Button notificationButton;
+    @FXML private HBox notificationBox;
+    @FXML private Button darkModeButton;
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
 
@@ -48,6 +51,7 @@ public class TaskPanelController {
     public Set<Task> getSelectedTasks() { return selectedTasks; }
     private CalendarPanelController calendarController;
     private StatsPanelController statsController;
+    private boolean isDarkMode = false;
 
 
     @FXML
@@ -59,7 +63,6 @@ public class TaskPanelController {
 
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
         recurrenceChoice.getSelectionModel().select("無");
-
 
         categoryHelper.refreshCategoryTabs();
         taskInputHelper.hideTaskInputBox();
@@ -248,6 +251,21 @@ public class TaskPanelController {
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
+    @FXML
+    private void handleToggleNotificationButton() {
+        notificationBox.setVisible(true);
+        notificationBox.setManaged(true);
+    }
+
+    @FXML void handleAddNotification(){
+        notificationBox.setVisible(false);
+        notificationBox.setManaged(false);
+    }
+
+    @FXML void handleCancelAddNotification(){
+        notificationBox.setVisible(false);
+        notificationBox.setManaged(false);
+    }
 
     @FXML
     private void handleExportTasks() {
@@ -256,15 +274,20 @@ public class TaskPanelController {
 
     @FXML
     private void toggleDarkMode() {
-        boolean dark = darkModeToggle.isSelected();
-        if (uncompletedListView.getScene() != null) {
-            if (dark) {
-                uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
-            } else {
-                uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
-            }
+        Scene scene = darkModeButton.getScene();
+        if (scene == null) return;
+
+        isDarkMode = !isDarkMode;
+
+        if (isDarkMode) {
+            uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
+            darkModeButton.setText("淺色模式");
+        } else {
+            uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
+            darkModeButton.setText("深色模式");
         }
     }
+
 
     public void refreshTaskViews() {
         taskViewHelper.refreshTaskViews();
