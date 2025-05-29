@@ -13,6 +13,7 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            new MidnightScheduler().start();
             // 建立共享的 TaskManager
             TaskManager sharedTaskManager = new TaskManager();
 
