@@ -26,7 +26,7 @@ public class StatsPanelController {
     @FXML
     private void initialize() {
         pieChart.setTitle("任務完成率");
-        lineChart.setTitle("壓力指數趨勢");
+        lineChart.setTitle("壓力分數趨勢");
     }
 
     public void setTaskManager(TaskManager manager) {
@@ -77,31 +77,31 @@ public class StatsPanelController {
 
 
         // 壓力圖（LineChart）資料處理
-        // 壓力圖（LineChart）資料處理（限定 ±x 天）
-        Map<LocalDate, Integer> pressureMap = new TreeMap<>();
-        Map<LocalDate, Integer> taskCountMap = new TreeMap<>();
+        Map<LocalDate, Integer> weeklyPressureMap = new TreeMap<>();
 
         LocalDate today = LocalDate.now();
-        LocalDate from = today.minusDays(15);
-        LocalDate to = today.plusDays(15);
+        LocalDate from = today.minusDays(25);
+        LocalDate to = today.plusDays(5);
 
+// 統計每週壓力總和
         for (Task t : tasks) {
             LocalDate date = t.getDeadline();
             if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
 
-            pressureMap.put(date, pressureMap.getOrDefault(date, 0) + t.getPriority());
-            taskCountMap.put(date, taskCountMap.getOrDefault(date, 0) + 1);
+            // 對應到該週的週一
+            LocalDate weekStart = date.with(java.time.DayOfWeek.MONDAY);
+
+            weeklyPressureMap.compute(weekStart, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
         }
 
+// 建立折線圖資料（每週一筆）
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("壓力指數（平均）");
+        series.setName("每週壓力總和");
 
-        for (Map.Entry<LocalDate, Integer> entry : pressureMap.entrySet()) {
-            LocalDate date = entry.getKey();
-            int totalPressure = entry.getValue();
-            int taskCount = taskCountMap.get(date); // 此處不會為 null
-            double averagePressure = (double) totalPressure / taskCount;
-            series.getData().add(new XYChart.Data<>(date.toString(), averagePressure));
+        for (Map.Entry<LocalDate, Integer> entry : weeklyPressureMap.entrySet()) {
+            LocalDate weekStart = entry.getKey();
+            int weeklySum = entry.getValue();
+            series.getData().add(new XYChart.Data<>(weekStart.toString(), weeklySum));
         }
 
         lineChart.getData().clear();
