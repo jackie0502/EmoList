@@ -21,8 +21,7 @@ public class StatsPanelController {
     @FXML private HBox view;
     @FXML private PieChart pieChart;
     @FXML private LineChart<String, Number> lineChart;
-    @FXML
-    private ComboBox<String> rangeComboBox;
+    @FXML private ComboBox<String> rangeComboBox;
 
     private TaskManager taskManager;
 
