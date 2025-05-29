@@ -59,6 +59,14 @@ public class TaskViewHelper {
                     }
                 });
 
+                // 根據重要性設定樣式
+                switch (actualTask.getPriority()) {
+                    case 3 -> checkBox.setStyle("-fx-text-fill: red; -fx-font-weight: bold;");
+                    case 2 -> checkBox.setStyle("-fx-text-fill: blue;");
+                    default -> checkBox.setStyle(""); // 預設黑色
+                }
+
+
                 if (completed) {
                     ContextMenu menu = new ContextMenu();
                     MenuItem cancel = new MenuItem("取消完成");
