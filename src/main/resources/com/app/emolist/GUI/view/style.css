@@ -1,3 +1,4 @@
+/* ========== 一般樣式區 ========== */
 /* 1: TaskPanel 樣式 */
 .task-panel {
     -fx-background-color: #f4f4f4;
@@ -39,6 +40,7 @@
     -fx-text-fill: #424242;
 }
 
+/* 按鈕 */
 .button-primary {
     -fx-background-color: #03A9F4;
     -fx-text-fill: white;
@@ -51,7 +53,35 @@
     -fx-background-color: #0288D1;
 }
 
-/* calendar.css */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-background-radius: 4;
+}
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+.btn-complete {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 5;
+    -fx-font-size: 14;
+}
+.btn-complete:hover {
+    -fx-background-color: #1976D2;
+}
+
+/* Calendar 樣式 */
+.calendar-panel {
+    -fx-background-color: #e0f7fa;
+    -fx-padding: 15;
+    -fx-border-color: #00acc1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
 .calendar-cell {
     -fx-background-color: white;
     -fx-background-radius: 10;
@@ -59,7 +89,6 @@
     -fx-border-color: #e0e0e0;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 4, 0, 2, 2);
 }
-
 .calendar-cell:hover {
     -fx-background-color: #f5f5f5;
 }
@@ -69,7 +98,6 @@
     -fx-font-weight: bold;
     -fx-text-fill: #333;
 }
-
 .date-label.today {
     -fx-background-color: #ff5252;
     -fx-text-fill: white;
@@ -83,51 +111,14 @@
     -fx-text-fill: #424242;
 }
 
-.btn-complete {
-    -fx-background-color: #2196F3;
-    -fx-text-fill: white;
-    -fx-padding: 6 12 6 12;
-    -fx-background-radius: 5;
-    -fx-font-size: 14;
-}
-
-.btn-complete:hover {
-    -fx-background-color: #1976D2;
-}
-
-.calendar-panel {
-    -fx-background-color: #e0f7fa;
-    -fx-padding: 15;
-    -fx-border-color: #00acc1;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-}
-
-.root.dark-mode .calendar-panel {
-    -fx-background-color: #333333;
-    -fx-border-color: #555555;
-}
-
-.root.dark-mode .label {
-    -fx-text-fill: #ffffff;
-}
 .calendar-cell.outside-month {
-    -fx-opacity: 1; /* 不透明 */
+    -fx-opacity: 1;
 }
-
 .date-label.outside-month {
-    -fx-text-fill: #d3d3d3; /* 灰字 */
+    -fx-text-fill: #d3d3d3;
 }
 
-
-.outside-month {
-    -fx-text-fill: #ffffff; /* 字體灰色 */
-    -fx-background-color: white; /* 背景維持白色 */
-}
-
-
-
-/* 11: StatsPanel 樣式 */
+/* StatsPanel 樣式 */
 .stats-panel {
     -fx-background-color: #fce4ec;
     -fx-padding: 15;
@@ -135,52 +126,171 @@
     -fx-border-radius: 8;
 }
 
-/* 16: ListView 任務卡片樣式 */
+/* ListView 任務卡片樣式 */
 .list-cell {
     -fx-padding: 4;
     -fx-border-color: #cccccc;
     -fx-border-radius: 4;
     -fx-background-color: white;
 }
-
 .list-cell:selected {
     -fx-background-color: #90caf9;
     -fx-text-fill: black;
 }
 
-/* 23: 深色模式覆蓋 */
-.root.dark-mode .task-panel,
-.root.dark-mode .calendar-panel,
-.root.dark-mode .stats-panel {
-    -fx-background-color: #333333;
-    -fx-border-color: #555555;
-}
-
-.root.dark-mode .list-cell {
-    -fx-background-color: #444444;
-    -fx-border-color: #777777;
-    -fx-text-fill: white;
-}
-
-.root.dark-mode .list-cell:selected {
-    -fx-background-color: #666666;
-    -fx-text-fill: white;
-}
-
-/* 34: 按鈕 hover 效果 */
-.button {
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: white;
-    -fx-background-radius: 4;
-}
-
-.button:hover {
-    -fx-background-color: #45a049;
-}
-
-/* 41: ComboBox 與 TextField */
+/* ComboBox 與 TextField */
 .combo-box, .text-field {
     -fx-background-radius: 4;
     -fx-border-radius: 4;
 }
 
+/* ========== 深色模式 ========== */
+
+.root.dark-mode {
+    -fx-base: #2c2c2c;
+    -fx-background-color: #2c2c2c;
+    -fx-text-fill: #e0e0e0;
+}
+
+/* 通用文字 */
+.root.dark-mode .label,
+.root.dark-mode .check-box {
+    -fx-text-fill: #e0e0e0;
+}
+
+/* Panel 類 */
+.root.dark-mode .task-panel,
+.root.dark-mode .calendar-panel,
+.root.dark-mode .stats-panel {
+    -fx-background-color: #2c2c2c;
+    -fx-border-color: #444444;
+    -fx-border-radius: 8;
+}
+
+/* ListView */
+.root.dark-mode .list-cell {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: #555555;
+    -fx-text-fill: #e0e0e0;
+}
+.root.dark-mode .list-cell:selected {
+    -fx-background-color: #4a90e2;
+    -fx-text-fill: #ffffff;
+}
+
+/* 按鈕 */
+.root.dark-mode .button {
+    -fx-background-color: #424242;
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 4;
+}
+.root.dark-mode .button:hover {
+    -fx-background-color: #616161;
+}
+.root.dark-mode .btn-complete {
+    -fx-background-color: #1976D2;
+}
+.root.dark-mode .btn-complete:hover {
+    -fx-background-color: #1565C0;
+}
+
+/* 輸入欄位 */
+.root.dark-mode .combo-box,
+.root.dark-mode .text-field,
+.root.dark-mode .date-picker {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: #555555;
+    -fx-text-fill: #e0e0e0;
+}
+
+/* 圖表 */
+.root.dark-mode .chart {
+    -fx-background-color: #2c2c2c;
+}
+.root.dark-mode .chart-title,
+.root.dark-mode .axis-label,
+.root.dark-mode .chart-legend-item-symbol {
+    -fx-text-fill: #e0e0e0;
+}
+
+/* Calendar cell */
+.root.dark-mode .calendar-cell {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: #555555;
+}
+.root.dark-mode .calendar-cell:hover {
+    -fx-background-color: #555555;
+}
+.root.dark-mode .date-label {
+    -fx-text-fill: #e0e0e0;
+}
+.root.dark-mode .date-label.today {
+    -fx-background-color: #ff5252;
+    -fx-text-fill: #ffffff;
+}
+
+/* Calendar 外部月份 */
+.root.dark-mode .outside-month .date-label {
+    -fx-text-fill: #777777;
+}
+
+/* ---------- 卡片滑過浮出動畫 ---------- */
+.container:hover, .task-panel:hover, .calendar-cell:hover, .list-cell:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 12, 0.3, 0, 4);
+    -fx-scale-x: 1.01;
+    -fx-scale-y: 1.01;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+/* ---------- Ripple 動畫效果（可搭配程式添加 class 實作） ---------- */
+.ripple {
+    -fx-background-color: #ffffff22;
+    -fx-background-radius: 50%;
+    -fx-scale-x: 0;
+    -fx-scale-y: 0;
+    -fx-opacity: 0.8;
+    -fx-transition: all 0.4s ease-out;
+}
+
+/* ---------- ListView 滑過高亮 ---------- */
+.list-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+/* ---------- Date Label 點擊時彈跳動畫 ---------- */
+.date-label:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+    -fx-transition: all 0.1s ease-in-out;
+}
+
+/* ---------- TextField 與 ComboBox 聚焦時亮光效果 ---------- */
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #42a5f5;
+    -fx-effect: dropshadow(gaussian, #42a5f5, 8, 0.4, 0, 0);
+}
+
+/* ---------- 美化 checkbox 外觀 ---------- */
+.check-box > .box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #9e9e9e;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 2;
+}
+.check-box:selected > .box {
+    -fx-background-color: #4caf50;
+    -fx-border-color: #388e3c;
+}
+.check-box:selected > .mark {
+    -fx-background-color: white;
+}
+
+/* ---------- 淡入動畫 Class，可配合 JavaFX 動態加入節點 ---------- */
+.fade-in {
+    -fx-opacity: 0;
+    -fx-transition: opacity 0.4s ease-in;
+}
+.fade-in.show {
+    -fx-opacity: 1;
+}
