@@ -23,12 +23,21 @@ public class StatsPanelController {
     @FXML private LineChart<String, Number> lineChart;
     @FXML private ComboBox<String> rangeComboBox;
 
+    @FXML private ComboBox<String> viewRangeChoice;
+
     private TaskManager taskManager;
 
     @FXML
     private void initialize() {
         pieChart.setTitle("任務完成率");
         lineChart.setTitle("壓力分數趨勢");
+
+        CategoryAxis xAxis = (CategoryAxis) lineChart.getXAxis();
+        xAxis.setTickLabelsVisible(false);
+        xAxis.setTickMarkVisible(false);
+        xAxis.setVisible(false);
+
+        lineChart.setLegendVisible(true);
     }
 
     public void setTaskManager(TaskManager manager) {
@@ -77,37 +86,92 @@ public class StatsPanelController {
             }
         });
 
-
         // 壓力圖（LineChart）資料處理
-        Map<LocalDate, Integer> weeklyPressureMap = new TreeMap<>();
-
         LocalDate today = LocalDate.now();
-        LocalDate from = today.minusDays(25);
-        LocalDate to = today.plusDays(5);
+        LocalDate from ;
+        LocalDate to ;
 
-// 統計每週壓力總和
-        for (Task t : tasks) {
-            LocalDate date = t.getDeadline();
-            if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
+        String selectedRange = viewRangeChoice.getValue(); // 讀取 ComboBox 選項
+        if (selectedRange == null) return;
 
-            // 對應到該週的週一
-            LocalDate weekStart = date.with(java.time.DayOfWeek.MONDAY);
+        switch (selectedRange) {
+            case "每日":
+                from = today.minusDays(6);
+                to = today.plusDays(1);
+                Map<LocalDate, Integer> dailyPressureMap = new TreeMap<>();
+                for (Task t : tasks) {
+                    LocalDate date = t.getDeadline();
+                    if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
+                    dailyPressureMap.compute(date, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
+                }
+                LocalDate cursor = from;
+                while (!cursor.isAfter(to)) {
+                    dailyPressureMap.putIfAbsent(cursor, 0);
+                    cursor = cursor.plusDays(1);
+                }
+                XYChart.Series<String, Number> dailySeries = new XYChart.Series<>();
+                dailySeries.setName("每日壓力總和");
+                for (Map.Entry<LocalDate, Integer> entry : dailyPressureMap.entrySet()) {
+                    LocalDate date = entry.getKey();
+                    int dailySum = entry.getValue();
+                    dailySeries.getData().add(new XYChart.Data<>(date.toString(), dailySum));
+                }
+                lineChart.getData().clear();
+                lineChart.getData().add(dailySeries);
+                break;
+            case "每週":
+                from = today.minusDays(25);
+                to = today.plusDays(5);
+                // 統計每週壓力總和
+                Map<LocalDate, Integer> weeklyPressureMap = new TreeMap<>();
+                for (Task t : tasks) {
+                    LocalDate date = t.getDeadline();
+                    if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
+                    // 對應到該週的週一
+                    LocalDate weekStart = date.with(java.time.DayOfWeek.MONDAY);
+                    weeklyPressureMap.compute(weekStart, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
+                }
+                 cursor = from;
+                while (!cursor.isAfter(to)) {
+                    weeklyPressureMap.putIfAbsent(cursor, 0);
+                    cursor = cursor.plusDays(1);
+                }
+                // 建立折線圖資料（每週一筆）
+                XYChart.Series<String, Number> series = new XYChart.Series<>();
+                series.setName("每週壓力總和");
+                for (Map.Entry<LocalDate, Integer> entry : weeklyPressureMap.entrySet()) {
+                    LocalDate weekStart = entry.getKey();
+                    int weeklySum = entry.getValue();
+                    series.getData().add(new XYChart.Data<>(weekStart.toString(), weeklySum));
+                }
+                lineChart.getData().clear();
+                lineChart.getData().add(series);
+                break;
+            case "每月":
+                from = today.minusDays(330);to = today.plusDays(30);
+                Map<LocalDate, Integer> monthlyPressureMap = new TreeMap<>();
+                for (Task t : tasks) {
+                    LocalDate date = t.getDeadline();
+                    if (date == null || date.isBefore(from) || date.isAfter(to)) continue;
 
-            weeklyPressureMap.compute(weekStart, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
+                    LocalDate monthStart = date.withDayOfMonth(1);
+                    monthlyPressureMap.compute(monthStart, (d, v) -> (v == null ? 0 : v) + t.getStressLevel());
+                }
+                 cursor = from;
+                while (!cursor.isAfter(to)) {
+                    monthlyPressureMap.putIfAbsent(cursor, 0);
+                    cursor = cursor.plusDays(1);
+                }
+                XYChart.Series<String, Number> monthlySeries = new XYChart.Series<>();
+                monthlySeries.setName("每月壓力總和");
+                for (Map.Entry<LocalDate, Integer> entry : monthlyPressureMap.entrySet()) {
+                    LocalDate monthStart = entry.getKey();
+                    int monthlySum = entry.getValue();
+                    monthlySeries.getData().add(new XYChart.Data<>(monthStart.toString(), monthlySum));
+                }
+                lineChart.getData().clear();
+                lineChart.getData().add(monthlySeries);
+                break;
         }
-
-// 建立折線圖資料（每週一筆）
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("每週壓力總和");
-
-        for (Map.Entry<LocalDate, Integer> entry : weeklyPressureMap.entrySet()) {
-            LocalDate weekStart = entry.getKey();
-            int weeklySum = entry.getValue();
-            series.getData().add(new XYChart.Data<>(weekStart.toString(), weeklySum));
-        }
-
-        lineChart.getData().clear();
-        lineChart.getData().add(series);
     }
-
 }
