@@ -4,6 +4,7 @@ import com.app.emolist.Controller.TaskManager;
 import com.app.emolist.DataBase.TaskRepository;
 import com.app.emolist.GUI.TaskPanel.*;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -29,7 +30,9 @@ public class TaskPanelController {
     @FXML private TextField inputField;
     @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
-    @FXML private CheckBox darkModeToggle;
+    @FXML private Button notificationButton;
+    @FXML private HBox notificationBox;
+    @FXML private Button darkModeButton;
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
 
@@ -48,6 +51,7 @@ public class TaskPanelController {
     public Set<Task> getSelectedTasks() { return selectedTasks; }
     private CalendarPanelController calendarController;
     private StatsPanelController statsController;
+    private boolean isDarkMode = false;
 
 
     @FXML
@@ -59,7 +63,6 @@ public class TaskPanelController {
 
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
         recurrenceChoice.getSelectionModel().select("無");
-
 
         categoryHelper.refreshCategoryTabs();
         taskInputHelper.hideTaskInputBox();
@@ -82,39 +85,44 @@ public class TaskPanelController {
 
     @FXML
     private void handleCompleteSelectedTasks() {
-
-        if (selectedTasks.isEmpty()) return;
-
-        // ✅ 顯示壓力指數輸入視窗
-        PressureDialog dialog = new PressureDialog(new ArrayList<>(selectedTasks));
-        Map<Task, Integer> pressureMap = dialog.showAndWait();
-        if (pressureMap == null || pressureMap.isEmpty()) return;
-
-        for (Task task : pressureMap.keySet()) {
-            task.setCompleted(true);
-            task.setStressLevel(pressureMap.get(task)); // ✅ 紀錄壓力指數
-        }
-
-        updatePanels();
-        if (calendarController != null) {
-            calendarController.refreshCalendarView(); // 👈 更新日曆
-        }
-
+        // ✅ 用 ArrayList 篩選出尚未完成的任務
+        ArrayList<Task> incompleteTasks = new ArrayList<>();
         for (Task task : selectedTasks) {
+            if (!task.isCompleted()) {
+                incompleteTasks.add(task);
+            }
+        }
+
+        // ✅ 若都是已完成任務，直接跳出不處理
+        if (incompleteTasks.isEmpty()) return;
+
+        // ✅ 顯示壓力指數對話框（只針對未完成任務）
+        PressureDialog dialog = new PressureDialog(new ArrayList<>(incompleteTasks));
+        Map<Task, Integer> stressMap = dialog.showAndWait();
+        if (stressMap == null) return;
+
+        for (Task task : incompleteTasks) {
             task.setCompleted(true);
 
-            // debug
-            System.out.println("✔️ 完成任務: " + task.getTitle());
-            System.out.println("Recurrence: " + task.getRecurrence());
-            System.out.println("Deadline: " + task.getDeadline());
+            // ✅ 記錄壓力指數
+            if (stressMap.containsKey(task.getId())) {
+                task.setStressLevel(stressMap.get(task.getId()));
+            }
 
+            // 🔁 若有 recurrence，產生新任務
             if (!"無".equals(task.getRecurrence()) && task.getDeadline() != null) {
-                LocalDate nextDeadline = switch (task.getRecurrence()) {
-                    case "每天" -> task.getDeadline().plusDays(1);
-                    case "每週" -> task.getDeadline().plusWeeks(1);
-                    case "每月" -> task.getDeadline().plusMonths(1);
-                    default -> null;
-                };
+                LocalDate nextDeadline = null;
+                switch (task.getRecurrence()) {
+                    case "每天":
+                        nextDeadline = task.getDeadline().plusDays(1);
+                        break;
+                    case "每週":
+                        nextDeadline = task.getDeadline().plusWeeks(1);
+                        break;
+                    case "每月":
+                        nextDeadline = task.getDeadline().plusMonths(1);
+                        break;
+                }
 
                 if (nextDeadline != null) {
                     Task newTask = new Task(
@@ -126,16 +134,16 @@ public class TaskPanelController {
                             task.getRecurrence()
                     );
                     taskManager.addTask(newTask);
-                    System.out.println("✅ 新增週期任務: " + newTask.getTitle() + " / " + newTask.getDeadline());
                 }
             }
         }
 
-
+        updatePanels(); // ✅ 更新日曆與統計圖表
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 更新日曆
+        }
         selectedTasks.clear();
         refreshTaskViews();
-        updatePanels(); // 更新日曆與統計圖表（如果有設）
-
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
@@ -243,6 +251,21 @@ public class TaskPanelController {
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
+    @FXML
+    private void handleToggleNotificationButton() {
+        notificationBox.setVisible(true);
+        notificationBox.setManaged(true);
+    }
+
+    @FXML void handleAddNotification(){
+        notificationBox.setVisible(false);
+        notificationBox.setManaged(false);
+    }
+
+    @FXML void handleCancelAddNotification(){
+        notificationBox.setVisible(false);
+        notificationBox.setManaged(false);
+    }
 
     @FXML
     private void handleExportTasks() {
@@ -251,15 +274,20 @@ public class TaskPanelController {
 
     @FXML
     private void toggleDarkMode() {
-        boolean dark = darkModeToggle.isSelected();
-        if (uncompletedListView.getScene() != null) {
-            if (dark) {
-                uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
-            } else {
-                uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
-            }
+        Scene scene = darkModeButton.getScene();
+        if (scene == null) return;
+
+        isDarkMode = !isDarkMode;
+
+        if (isDarkMode) {
+            uncompletedListView.getScene().getRoot().getStyleClass().add("dark-mode");
+            darkModeButton.setText("淺色模式");
+        } else {
+            uncompletedListView.getScene().getRoot().getStyleClass().remove("dark-mode");
+            darkModeButton.setText("深色模式");
         }
     }
+
 
     public void refreshTaskViews() {
         taskViewHelper.refreshTaskViews();

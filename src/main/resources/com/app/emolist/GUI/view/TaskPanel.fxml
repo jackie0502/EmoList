@@ -3,8 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.app.emolist.GUI.TaskPanelController"
@@ -44,7 +42,7 @@
             <Button text="刪除任務" onAction="#handleDeleteTask" />
             <Button text="完成任務" onAction="#handleCompleteSelectedTasks" />
             <Button text="取消完成" onAction="#handleUncompleteTask" />
-
+            <Button fx:id="darkModeButton" text="深色模式" onAction="#toggleDarkMode" />
         </HBox>
 
         <!-- 浮動新增任務區 -->
@@ -59,23 +57,14 @@
             <HBox spacing="10">
                 <Button text="確認新增" onAction="#handleAddTask" />
                 <Button text="取消" onAction="#handleCancelAddTask" />
+                <Button text="新增通知" onAction="#handleToggleNotificationButton" />
                 <Button text="清除日期" onAction="#handleClearDeadline" />
             </HBox>
+            <HBox spacing="10" visible="false" fx:id="notificationBox" managed="false">
+                <Button text="確認" onAction="#handleAddNotification" />
+                <Button text="取消" onAction="#handleCancelAddNotification" />
+            </HBox>
         </VBox>
-
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <CheckBox fx:id="darkModeToggle" text="深色模式" onAction="#toggleDarkMode" />
-            <ComboBox fx:id="viewRangeChoice" promptText="檢視範圍">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="每日" />
-                        <String fx:value="每週" />
-                        <String fx:value="每月" />
-                    </FXCollections>
-                </items>
-            </ComboBox>
-        </HBox>
-
 
     </VBox>
 </AnchorPane>
