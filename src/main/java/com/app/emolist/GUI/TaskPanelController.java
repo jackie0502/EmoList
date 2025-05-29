@@ -82,39 +82,44 @@ public class TaskPanelController {
 
     @FXML
     private void handleCompleteSelectedTasks() {
-
-        if (selectedTasks.isEmpty()) return;
-
-        // ✅ 顯示壓力指數輸入視窗
-        PressureDialog dialog = new PressureDialog(new ArrayList<>(selectedTasks));
-        Map<Task, Integer> pressureMap = dialog.showAndWait();
-        if (pressureMap == null || pressureMap.isEmpty()) return;
-
-        for (Task task : pressureMap.keySet()) {
-            task.setCompleted(true);
-            task.setStressLevel(pressureMap.get(task)); // ✅ 紀錄壓力指數
-        }
-
-        updatePanels();
-        if (calendarController != null) {
-            calendarController.refreshCalendarView(); // 👈 更新日曆
-        }
-
+        // ✅ 用 ArrayList 篩選出尚未完成的任務
+        ArrayList<Task> incompleteTasks = new ArrayList<>();
         for (Task task : selectedTasks) {
+            if (!task.isCompleted()) {
+                incompleteTasks.add(task);
+            }
+        }
+
+        // ✅ 若都是已完成任務，直接跳出不處理
+        if (incompleteTasks.isEmpty()) return;
+
+        // ✅ 顯示壓力指數對話框（只針對未完成任務）
+        PressureDialog dialog = new PressureDialog(new ArrayList<>(incompleteTasks));
+        Map<Task, Integer> stressMap = dialog.showAndWait();
+        if (stressMap == null) return;
+
+        for (Task task : incompleteTasks) {
             task.setCompleted(true);
 
-            // debug
-            System.out.println("✔️ 完成任務: " + task.getTitle());
-            System.out.println("Recurrence: " + task.getRecurrence());
-            System.out.println("Deadline: " + task.getDeadline());
+            // ✅ 記錄壓力指數
+            if (stressMap.containsKey(task.getId())) {
+                task.setStressLevel(stressMap.get(task.getId()));
+            }
 
+            // 🔁 若有 recurrence，產生新任務
             if (!"無".equals(task.getRecurrence()) && task.getDeadline() != null) {
-                LocalDate nextDeadline = switch (task.getRecurrence()) {
-                    case "每天" -> task.getDeadline().plusDays(1);
-                    case "每週" -> task.getDeadline().plusWeeks(1);
-                    case "每月" -> task.getDeadline().plusMonths(1);
-                    default -> null;
-                };
+                LocalDate nextDeadline = null;
+                switch (task.getRecurrence()) {
+                    case "每天":
+                        nextDeadline = task.getDeadline().plusDays(1);
+                        break;
+                    case "每週":
+                        nextDeadline = task.getDeadline().plusWeeks(1);
+                        break;
+                    case "每月":
+                        nextDeadline = task.getDeadline().plusMonths(1);
+                        break;
+                }
 
                 if (nextDeadline != null) {
                     Task newTask = new Task(
@@ -126,16 +131,16 @@ public class TaskPanelController {
                             task.getRecurrence()
                     );
                     taskManager.addTask(newTask);
-                    System.out.println("✅ 新增週期任務: " + newTask.getTitle() + " / " + newTask.getDeadline());
                 }
             }
         }
 
-
+        updatePanels(); // ✅ 更新日曆與統計圖表
+        if (calendarController != null) {
+            calendarController.refreshCalendarView(); // 👈 更新日曆
+        }
         selectedTasks.clear();
         refreshTaskViews();
-        updatePanels(); // 更新日曆與統計圖表（如果有設）
-
         taskRepo.saveTasks(taskManager.getAllTasks());
     }
 
