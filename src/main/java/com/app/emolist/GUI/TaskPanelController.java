@@ -115,7 +115,8 @@ public class TaskPanelController {
         if (stressMap == null) return;
 
         for (Task task : incompleteTasks) {
-            task.setCompleted(true);
+            taskManager.setTaskCompleted(task, true); // 取消完成並立即存檔
+
 
             // ✅ 記錄壓力指數
             if (stressMap.containsKey(task)) {
@@ -162,7 +163,7 @@ public class TaskPanelController {
         if (selectedTasks.isEmpty()) return;
 
         for (Task task : selectedTasks) {
-            task.setCompleted(false);
+            taskManager.setTaskCompleted(task, false); // 取消完成並立即存檔
             task.setStressLevel(0);
         }
 
