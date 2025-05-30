@@ -1,5 +1,6 @@
 package com.app.emolist.GUI.TaskPanel;
 
+import com.app.emolist.DataBase.TaskRepository;
 import com.app.emolist.GUI.TaskPanelController;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -94,6 +95,10 @@ public class CategoryHelper {
         MenuItem delete = new MenuItem("刪除此分類");
         delete.setOnAction(e -> {
             controller.getTaskCategoryChoice().getItems().remove(category);
+
+            // 儲存更新後的分類
+            TaskRepository.saveCategoryList(controller.getTaskCategoryChoice().getItems());
+
             refreshCategoryTabs();                  // 重建分類列
             controller.refreshTaskViews();          // 重新顯示任務
             if (controller.getCurrentCategoryFilter().equals(category)) {
