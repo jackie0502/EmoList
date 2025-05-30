@@ -16,6 +16,8 @@ import java.nio.file.StandardCopyOption;
 
 public class TaskRepository {
     private static final String DEFAULT_PATH = "data/tasks.json";
+    private static final String CATEGORY_PATH = "data/categories.json";
+
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
@@ -53,8 +55,6 @@ public class TaskRepository {
         }
     }
 
-
-
     // 載入任務
     public static List<Task> loadTasks() {
         File file = new File(DEFAULT_PATH);
@@ -69,5 +69,26 @@ public class TaskRepository {
             return new ArrayList<>();
         }
     }
+
+    public static void saveCategoryList(List<String> categories) {
+        try (Writer writer = new FileWriter(CATEGORY_PATH)) {
+            gson.toJson(categories, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<String> loadCategoryList() {
+        File file = new File(CATEGORY_PATH);
+        if (!file.exists()) return new ArrayList<>();
+        try (Reader reader = new FileReader(file)) {
+            Type listType = new TypeToken<List<String>>() {}.getType();
+            return gson.fromJson(reader, listType);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
 }
 

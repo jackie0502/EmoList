@@ -4,6 +4,9 @@ import com.app.emolist.Controller.Task;
 import com.app.emolist.GUI.TaskPanelController;
 import javafx.scene.control.Alert;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import com.app.emolist.GUI.NotificationHelper;  // 匯入新工具類
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -20,26 +23,28 @@ public class DeadlineHelper {
 
 
     public static void checkDeadlines() {
-        LocalDate today = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0); // 精準到分鐘
+
         StringBuilder warnings = new StringBuilder();
 
         for (Task task : controller.getTaskManager().getAllTasks()) {
-            if (!task.isCompleted() && task.getDeadline() != null) {
-                if (task.isNotificationEnabled()) {
-                    LocalDate notifyDate = task.getDeadline().minusDays(task.getNotifyDaysBefore());
-                    if (!today.isBefore(notifyDate) && !today.isAfter(task.getDeadline())) {
-                        warnings.append("【通知】").append(task.getTitle())
-                                .append("（截止日 ").append(task.getDeadline()).append("）\n");
-                    }
-                } else {
-                    // 你原本的 deadline 到期提醒邏輯（沒設定通知就不通知）
-                }
+            if (task.isCompleted() || task.getDeadline() == null || !task.isNotificationEnabled()) {
+                continue;
+            }
+
+            // 檢查是否到達通知時間
+            int daysBefore = task.getNotifyDaysBefore();
+            LocalDateTime notifyDateTime = task.getDeadline()
+                    .minusDays(daysBefore)
+                    .atTime(task.getNotifyTime() != null ? task.getNotifyTime() : LocalTime.of(9, 0)); // 預設 9:00
+
+            if (now.equals(notifyDateTime)) {
+                warnings.append("【提醒】").append(task.getTitle())
+                        .append("（截止日：").append(task.getDeadline()).append("）\n");
             }
         }
 
-
         if (!warnings.isEmpty()) {
-            // 顯示通知視窗和系統通知
             TextArea textArea = new TextArea(warnings.toString());
             textArea.setEditable(false);
             textArea.setWrapText(true);
@@ -48,8 +53,8 @@ public class DeadlineHelper {
             textArea.setMaxHeight(Region.USE_PREF_SIZE);
 
             Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("任務到期提醒");
-            dialog.setHeaderText("以下任務已到期或即將到期：");
+            dialog.setTitle("任務通知提醒");
+            dialog.setHeaderText("以下任務到達通知時間：");
             dialog.getDialogPane().setContent(textArea);
             dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
             dialog.show();
@@ -57,5 +62,7 @@ public class DeadlineHelper {
             NotificationHelper.showSystemNotification("任務提醒", warnings.toString());
         }
     }
+
+
 
 }

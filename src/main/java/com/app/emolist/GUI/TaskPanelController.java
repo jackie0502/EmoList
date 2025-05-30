@@ -11,10 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.time.LocalDate;
 
 public class TaskPanelController {
@@ -80,6 +77,9 @@ public class TaskPanelController {
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 
+        List<String> categories = TaskRepository.loadCategoryList();
+        taskCategoryChoice.getItems().setAll(categories);
+
     }
 
     // 👇 提供給子模組呼叫的橋接方法們
@@ -115,7 +115,8 @@ public class TaskPanelController {
         if (stressMap == null) return;
 
         for (Task task : incompleteTasks) {
-            task.setCompleted(true);
+            taskManager.setTaskCompleted(task, true); // 取消完成並立即存檔
+
 
             // ✅ 記錄壓力指數
             if (stressMap.containsKey(task)) {
@@ -162,7 +163,7 @@ public class TaskPanelController {
         if (selectedTasks.isEmpty()) return;
 
         for (Task task : selectedTasks) {
-            task.setCompleted(false);
+            taskManager.setTaskCompleted(task, false); // 取消完成並立即存檔
             task.setStressLevel(0);
         }
 
@@ -205,6 +206,13 @@ public class TaskPanelController {
             categoryMessage.setText("已新增分類：" + newCategory);
             addCategoryBox.setVisible(false);
             addCategoryBox.setManaged(false);
+
+            // ✅ 儲存新增後的分類清單
+            List<String> cleanList = taskCategoryChoice.getItems().stream()
+                    .filter(c -> c != null && !c.isBlank())
+                    .distinct()
+                    .toList();
+            TaskRepository.saveCategoryList(cleanList);
         }
     }
 
