@@ -70,8 +70,7 @@ public class TaskPanelController {
         taskCategoryChoice.getItems().addAll("工作", "娛樂", "無");
         taskCategoryChoice.getSelectionModel().select("無");
         priorityChoice.getItems().addAll("低", "中", "高");
-        priorityChoice.getSelectionModel().select("中");
-
+        priorityChoice.getSelectionModel().select("低");
         recurrenceChoice.getItems().addAll("無", "每日", "每週", "每月");
         recurrenceChoice.getSelectionModel().select("無");
 
