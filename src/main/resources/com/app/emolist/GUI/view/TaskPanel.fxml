@@ -62,36 +62,39 @@
                 <Button text="新增通知" onAction="#handleToggleNotificationButton" />
                 <Button text="清除日期" onAction="#handleClearDeadline" />
             </HBox>
-            <HBox spacing="10" visible="false" fx:id="notificationBox" managed="false" alignment="CENTER_LEFT">
+            <VBox spacing="10" visible="false" fx:id="notificationBox" managed="false" alignment="CENTER_LEFT">
                 <!-- 啟用通知 CheckBox -->
-                <CheckBox fx:id="enableNotificationCheckBox" text="啟用通知" onAction="#handleToggleEnableNotification" />
+                <HBox spacing="10">
+                    <CheckBox fx:id="enableNotificationCheckBox" text="啟用通知" onAction="#handleToggleEnableNotification" />
 
-                <!-- 幾天前通知 -->
-                <Label text="通知時間：" />
-                <ComboBox fx:id="daysBeforeChoice" promptText="幾天前" prefWidth="80">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <Integer fx:value="1" />
-                            <Integer fx:value="2" />
-                            <Integer fx:value="3" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-
+                    <!-- 幾天前通知 -->
+                    <Label text="通知時間：" />
+                    <ComboBox fx:id="daysBeforeChoice" promptText="幾天前" prefWidth="80">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <Integer fx:value="1" />
+                                <Integer fx:value="2" />
+                                <Integer fx:value="3" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </HBox>
                 <!-- 自訂時間 -->
-                <Label text="時間：" />
-                <Spinner fx:id="hourSpinner" prefWidth="60" editable="true">
-                    <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23" initialValue="9" />
-                    </valueFactory>
-                </Spinner>
-                <Label text=":" />
-                <Spinner fx:id="minuteSpinner" prefWidth="60" editable="true">
-                    <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59" initialValue="0" />
-                    </valueFactory>
-                </Spinner>
-            </HBox>
+                <HBox spacing="10">
+                    <Label text="時間：" />
+                    <Spinner fx:id="hourSpinner" prefWidth="60" editable="true">
+                        <valueFactory>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="23" initialValue="9" />
+                        </valueFactory>
+                    </Spinner>
+                    <Label text=":" />
+                    <Spinner fx:id="minuteSpinner" prefWidth="60" editable="true">
+                        <valueFactory>
+                            <SpinnerValueFactory.IntegerSpinnerValueFactory min="0" max="59" initialValue="0" />
+                        </valueFactory>
+                    </Spinner>
+                </HBox>
+            </VBox>
 
         </VBox>
 
