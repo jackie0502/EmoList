@@ -3,27 +3,41 @@
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.app.emolist.GUI.StatsPanelController"
             prefHeight="300.0" prefWidth="800.0"
             stylesheets="@style.css">
-
-    <HBox fx:id="view" spacing="20" alignment="CENTER"
-          styleClass="stats-panel"
+    <VBox spacing="10" styleClass="stats-panel"
           AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
           AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <ComboBox fx:id="viewRangeChoice" promptText="檢視範圍" onAction="#updateCharts">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="每日" />
+                    <String fx:value="每週" />
+                    <String fx:value="每月" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <HBox fx:id="view" spacing="20" alignment="CENTER"
+              AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+              AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
 
 
 
-    <PieChart fx:id="pieChart" prefWidth="300.0" prefHeight="300.0" />
-        <LineChart fx:id="lineChart" prefWidth="450.0" prefHeight="300.0">
-            <xAxis>
-                <CategoryAxis label="日期"/>
-            </xAxis>
-            <yAxis>
-                <NumberAxis label="壓力指數"/>
-            </yAxis>
-        </LineChart>
-    </HBox>
+            <PieChart fx:id="pieChart" prefWidth="300.0" prefHeight="300.0" />
+            <LineChart fx:id="lineChart" prefWidth="450.0" prefHeight="300.0">
+                <xAxis>
+                    <CategoryAxis label=""/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="壓力分數"/>
+                </yAxis>
+            </LineChart>
+        </HBox>
+    </VBox>
 </AnchorPane>
