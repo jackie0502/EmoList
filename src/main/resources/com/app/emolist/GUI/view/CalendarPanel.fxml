@@ -11,7 +11,10 @@
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.app.emolist.GUI.CalendarPanelController"
-      spacing="10" alignment="CENTER">
+      spacing="10" alignment="CENTER"
+      prefHeight="250.0" VBox.vgrow="NEVER">
+
+
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
