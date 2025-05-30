@@ -29,7 +29,7 @@ public class TaskPanelController {
     @FXML private ComboBox<String> priorityChoice;
     @FXML private ComboBox<String> recurrenceChoice;
     @FXML private Button notificationButton;
-    @FXML private HBox notificationBox;
+    @FXML private VBox notificationBox;
     @FXML private Button darkModeButton;
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
