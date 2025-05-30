@@ -14,8 +14,7 @@ public class MainView extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            new MidnightScheduler().start();
-            // 建立共享的 TaskManager
+            // 建立共享 TaskManager
             TaskManager sharedTaskManager = new TaskManager();
 
             // 載入 TaskPanel.fxml 並取得 Controller
@@ -37,13 +36,13 @@ public class MainView extends Application {
             statsController.setTaskManager(sharedTaskManager);
 
             // 建立彼此注入
-//            taskController.setCalendarController(calendarController);
-//            taskController.setStatsController(statsController);
-            // 建立彼此注入
             taskController.setCalendarController(calendarController);
             calendarController.setTaskPanelController(taskController);
             taskController.setStatsController(statsController);
 
+            // 啟動 MidnightScheduler，傳入 taskController
+            MidnightScheduler scheduler = new MidnightScheduler(taskController);
+            scheduler.start();
 
             // 主畫面排版
             HBox topRow = new HBox(20, taskPanel, calendarPanel);
@@ -60,11 +59,12 @@ public class MainView extends Application {
             primaryStage.setMinHeight(600);
             primaryStage.show();
 
-            // 啟動時檢查 Deadline
+            // 啟動時先檢查 Deadline
             taskController.checkDeadlines();
+
             primaryStage.setOnCloseRequest(event -> {
-                Platform.exit();  // 正常關閉 JavaFX 執行緒
-                System.exit(0);   // 強制關閉 JVM（保險用）
+                Platform.exit();
+                System.exit(0);
             });
 
         } catch (Exception e) {

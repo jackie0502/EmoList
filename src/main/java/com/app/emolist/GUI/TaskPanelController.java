@@ -3,6 +3,7 @@ import com.app.emolist.Controller.Task;
 import com.app.emolist.Controller.TaskManager;
 import com.app.emolist.DataBase.TaskRepository;
 import com.app.emolist.GUI.TaskPanel.*;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -35,6 +36,16 @@ public class TaskPanelController {
     @FXML private Button darkModeButton;
     @FXML private Region categorySpacer;
     @FXML private VBox taskInputBox;
+    @FXML
+    public CheckBox enableNotificationCheckBox;
+    @FXML
+    public ComboBox<Integer> daysBeforeChoice;
+    @FXML
+    public Spinner<Integer> hourSpinner;
+    @FXML
+    public Spinner<Integer> minuteSpinner;
+    @FXML private Label timeColon;
+
 
     private final TaskManager taskManager = new TaskManager();
     private final TaskRepository taskRepo = new TaskRepository();
@@ -66,6 +77,9 @@ public class TaskPanelController {
         categoryHelper.refreshCategoryTabs();
         taskInputHelper.hideTaskInputBox();
         taskViewHelper.setupListViews();
+        hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
+        minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+
     }
 
     // 👇 提供給子模組呼叫的橋接方法們
@@ -209,6 +223,17 @@ public class TaskPanelController {
     @FXML
     private void handleAddTask() {
         taskInputHelper.handleAddTask();
+        if (enableNotificationCheckBox.isSelected()) {
+            Integer daysBefore = daysBeforeChoice.getValue();
+            Integer hour = hourSpinner.getValue();
+            Integer minute = minuteSpinner.getValue();
+
+            if (daysBefore != null && hour != null && minute != null) {
+                System.out.println("✅ 通知設定：提前 " + daysBefore + " 天，" + hour + ":" + String.format("%02d", minute));
+                // 可存在 Task 中、或傳給通知模組儲存
+            }
+        }
+
         if (statsController != null) {
             statsController.updateCharts();
         }
@@ -359,4 +384,25 @@ public class TaskPanelController {
 
     public String getCurrentCategoryFilter() { return currentCategoryFilter; }
     public void setCurrentCategoryFilter(String filter) { this.currentCategoryFilter = filter; }
+
+    @FXML
+    private void handleToggleNotificationOptions() {
+        boolean enabled = enableNotificationCheckBox.isSelected();
+
+        daysBeforeChoice.setVisible(enabled);
+        daysBeforeChoice.setManaged(enabled);
+
+        hourSpinner.setVisible(enabled);
+        hourSpinner.setManaged(enabled);
+
+        minuteSpinner.setVisible(enabled);
+        minuteSpinner.setManaged(enabled);
+
+        timeColon.setVisible(enabled);
+        timeColon.setManaged(enabled);
+    }
+
+
+    public void handleToggleEnableNotification(ActionEvent actionEvent) {
+    }
 }
