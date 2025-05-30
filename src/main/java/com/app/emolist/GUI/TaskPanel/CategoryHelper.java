@@ -69,7 +69,7 @@ public class CategoryHelper {
                     controller.setCurrentCategoryFilter(selected);
                     controller.refreshTaskViews();
                     highlightTab(null);
-                    Platform.runLater(() -> dropdown.setValue(null));
+//                    Platform.runLater(() -> dropdown.setValue(null));
                 }
             });
         }
