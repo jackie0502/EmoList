@@ -312,7 +312,7 @@
 .root.dark-mode .outside-month .date-label {
     -fx-text-fill: #777777;
 }
-/* 深色模式下，覆蓋 card 樣式（白底容器） */
+/* 深色模式下，覆蓋 card 樣式（白底容器）  */
 .root.dark-mode .card {
     -fx-background-color: #2e2e2e;
     -fx-border-color: rgba(255, 255, 255, 0.08);
