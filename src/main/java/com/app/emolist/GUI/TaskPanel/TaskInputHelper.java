@@ -53,6 +53,21 @@ public class TaskInputHelper {
         String recurrence = controller.getRecurrenceChoice().getValue();
         task.setRecurrence(recurrence != null ? recurrence : "無");
 
+        // 這裡加上通知設定判斷與設定
+        if (controller.enableNotificationCheckBox.isSelected()) {
+            Integer daysBefore = controller.daysBeforeChoice.getValue();
+            Integer hour = controller.hourSpinner.getValue();
+            Integer minute = controller.minuteSpinner.getValue();
+
+            if (daysBefore != null && hour != null && minute != null) {
+                task.setNotificationEnabled(true); // 你要有這些 setter 方法在 Task 裡
+                task.setNotifyDaysBefore(daysBefore);
+                task.setNotifyTime(java.time.LocalTime.of(hour, minute));
+            }
+        } else {
+            task.setNotificationEnabled(false);
+        }
+
         // 新增任務
         controller.getTaskManager().addTask(task);
 
@@ -63,4 +78,5 @@ public class TaskInputHelper {
         controller.refreshTaskViews();
         controller.updatePanels();
     }
+
 }

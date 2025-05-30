@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,9 @@ public class TaskRepository {
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
             .create();
+
 
     // LocalDate 序列化/反序列化 Adapter
     static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
@@ -40,18 +43,17 @@ public class TaskRepository {
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) parent.mkdirs();
 
-        File tempFile = new File(DEFAULT_PATH);
-        try (Writer writer = new FileWriter(tempFile)) {
+        try (Writer writer = new FileWriter(file)) {  // 直接用正式檔案路徑寫
             gson.toJson(tasks, writer);
             writer.flush();
-            // 儲存完畢後再覆蓋
-            if (!tempFile.renameTo(file)) throw new IOException("儲存時覆蓋原始檔失敗");
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
+
+
 
     // 載入任務
     public static List<Task> loadTasks() {
@@ -68,3 +70,4 @@ public class TaskRepository {
         }
     }
 }
+

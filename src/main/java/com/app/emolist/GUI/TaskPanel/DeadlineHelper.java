@@ -25,18 +25,21 @@ public class DeadlineHelper {
 
         for (Task task : controller.getTaskManager().getAllTasks()) {
             if (!task.isCompleted() && task.getDeadline() != null) {
-                if (task.getDeadline().isBefore(today)) {
-                    warnings.append("【過期】").append(task.getTitle()).append("（").append(task.getDeadline()).append("）\n");
-                } else if (task.getDeadline().equals(today)) {
-                    warnings.append("【今天截止】").append(task.getTitle()).append("（").append(task.getDeadline()).append("）\n");
-                } else if (task.getDeadline().isBefore(LocalDate.now().plusDays(2))) {
-                    warnings.append("【即將截止】").append(task.getTitle()).append("（").append(task.getDeadline()).append("）\n");
+                if (task.isNotificationEnabled()) {
+                    LocalDate notifyDate = task.getDeadline().minusDays(task.getNotifyDaysBefore());
+                    if (!today.isBefore(notifyDate) && !today.isAfter(task.getDeadline())) {
+                        warnings.append("【通知】").append(task.getTitle())
+                                .append("（截止日 ").append(task.getDeadline()).append("）\n");
+                    }
+                } else {
+                    // 你原本的 deadline 到期提醒邏輯（沒設定通知就不通知）
                 }
             }
         }
 
+
         if (!warnings.isEmpty()) {
-            // 用 TextArea 來放內容，並支援捲動
+            // 顯示通知視窗和系統通知
             TextArea textArea = new TextArea(warnings.toString());
             textArea.setEditable(false);
             textArea.setWrapText(true);
@@ -54,4 +57,5 @@ public class DeadlineHelper {
             NotificationHelper.showSystemNotification("任務提醒", warnings.toString());
         }
     }
+
 }

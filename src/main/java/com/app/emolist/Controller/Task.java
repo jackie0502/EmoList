@@ -3,6 +3,10 @@ package com.app.emolist.Controller;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
+import java.time.LocalTime; // 加在 import 區塊
+
+
+
 
 public class Task {
     private final String id;
@@ -14,6 +18,10 @@ public class Task {
     private String tags;
     private String recurrence;
     private int stressLevel = 0;
+    // 新增通知相關欄位
+    private boolean notificationEnabled = false;
+    private int notifyDaysBefore = 0;
+    private LocalTime notifyTime = null;
 
     public Task(String title) {
         this.id = UUID.randomUUID().toString();
@@ -63,12 +71,37 @@ public class Task {
     public String getRecurrence() {return recurrence;}
     public int getStressLevel() { return stressLevel; }
 
+
     public void setCompleted(boolean completed) {this.isCompleted = completed;}
     public void setCategory(String category) {this.category = category;}
     public void setPriority(int priority) {this.priority = priority;}
     public void setTags(String tags) {this.tags = tags;}
     public void setRecurrence(String recurrence) {this.recurrence = recurrence;}
     public void setStressLevel(int level) { this.stressLevel = level; }
+    public boolean isNotificationEnabled() {
+        return notificationEnabled;
+    }
+
+    public void setNotificationEnabled(boolean notificationEnabled) {
+        this.notificationEnabled = notificationEnabled;
+    }
+
+    public int getNotifyDaysBefore() {
+        return notifyDaysBefore;
+    }
+
+    public void setNotifyDaysBefore(int notifyDaysBefore) {
+        this.notifyDaysBefore = notifyDaysBefore;
+    }
+
+    public LocalTime getNotifyTime() {
+        return notifyTime;
+    }
+
+    public void setNotifyTime(LocalTime notifyTime) {
+        this.notifyTime = notifyTime;
+    }
+
 
     public boolean isRecurring() {return recurrence != null && !recurrence.equals("無");}
     public void toggleCompleted() {isCompleted = !isCompleted;}
