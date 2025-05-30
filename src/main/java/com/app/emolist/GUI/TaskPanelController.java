@@ -11,10 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import java.time.LocalDate;
 
 public class TaskPanelController {
@@ -79,6 +76,9 @@ public class TaskPanelController {
         taskViewHelper.setupListViews();
         hourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
         minuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+
+        List<String> categories = TaskRepository.loadCategoryList();
+        taskCategoryChoice.getItems().setAll(categories);
 
     }
 
@@ -206,6 +206,13 @@ public class TaskPanelController {
             categoryMessage.setText("已新增分類：" + newCategory);
             addCategoryBox.setVisible(false);
             addCategoryBox.setManaged(false);
+
+            // ✅ 儲存新增後的分類清單
+            List<String> cleanList = taskCategoryChoice.getItems().stream()
+                    .filter(c -> c != null && !c.isBlank())
+                    .distinct()
+                    .toList();
+            TaskRepository.saveCategoryList(cleanList);
         }
     }
 
