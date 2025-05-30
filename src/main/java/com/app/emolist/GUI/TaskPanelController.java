@@ -105,8 +105,8 @@ public class TaskPanelController {
             task.setCompleted(true);
 
             // ✅ 記錄壓力指數
-            if (stressMap.containsKey(task.getId())) {
-                task.setStressLevel(stressMap.get(task.getId()));
+            if (stressMap.containsKey(task)) {
+                task.setStressLevel(stressMap.get(task));
             }
 
             // 🔁 若有 recurrence，產生新任務
@@ -139,9 +139,6 @@ public class TaskPanelController {
         }
 
         updatePanels(); // ✅ 更新日曆與統計圖表
-        if (calendarController != null) {
-            calendarController.refreshCalendarView(); // 👈 更新日曆
-        }
         selectedTasks.clear();
         refreshTaskViews();
         taskRepo.saveTasks(taskManager.getAllTasks());
@@ -153,6 +150,7 @@ public class TaskPanelController {
 
         for (Task task : selectedTasks) {
             task.setCompleted(false);
+            task.setStressLevel(0);
         }
 
         selectedTasks.clear();
