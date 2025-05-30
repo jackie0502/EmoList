@@ -58,6 +58,7 @@ public class Task {
         this.priority = priority;
         this.tags = (tags != null ? tags : "");
         this.recurrence = (recurrence != null ? recurrence : "無");
+        this.stressLevel = 0;
     }
 
 

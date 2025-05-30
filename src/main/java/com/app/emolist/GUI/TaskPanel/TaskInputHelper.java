@@ -18,7 +18,7 @@ public class TaskInputHelper {
         controller.getTaskInputBox().setManaged(true);
         controller.getInputField().clear();
         controller.getTaskCategoryChoice().getSelectionModel().select("無");
-        controller.getPriorityChoice().getSelectionModel().select("中");
+        controller.getPriorityChoice().getSelectionModel().select("低");
         controller.getRecurrenceChoice().getSelectionModel().select("無");
     }
 
