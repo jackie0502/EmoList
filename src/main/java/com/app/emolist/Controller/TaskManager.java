@@ -7,10 +7,13 @@ import java.util.List;
 public class TaskManager {
     private List<Task> taskList;
 
-    public TaskManager() {taskList = TaskRepository.loadTasks();
+    public TaskManager() {
+        taskList = TaskRepository.loadTasks();
     }
 
-    public List<Task> getAllTasks() {return taskList;}
+    public List<Task> getAllTasks() {
+        return taskList;
+    }
 
     public void addTask(Task task) {
         taskList.add(task);
@@ -29,25 +32,27 @@ public class TaskManager {
         }
     }
 
-    public void saveAll() {
+    public void setTaskCompleted(Task task, boolean completed) {
+        task.setCompleted(completed);
         TaskRepository.saveTasks(taskList);
+    }
+
+    public void saveAll() {
+        TaskRepository.saveTasks(taskList); // ✅ 修正了
     }
 
     public void reload() {
         taskList = TaskRepository.loadTasks();
     }
 
-    // 依截止日期升冪排序
     public void sortByDeadDate() {
         taskList.sort(Comparator.comparing(Task::getDeadline, Comparator.nullsLast(Comparator.naturalOrder())));
     }
 
-    // 依優先順序排序（假設 getpriority() 回傳 int，數字越大優先）
     public void sortBypriority() {
         taskList.sort(Comparator.comparingInt(Task::getPriority).reversed());
     }
 
-    // 依任務名稱排序
     public void sortByTitle() {
         taskList.sort(Comparator.comparing(Task::getTitle));
     }
