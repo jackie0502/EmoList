@@ -1,13 +1,22 @@
 /* ========== 一般樣式區 ========== */
 /* 1: TaskPanel 樣式 */
 .task-panel {
-    -fx-background-color: #f4f4f4;
+    -fx-padding: 20;
+    -fx-background-color: transparent;
+}
+.card {
     -fx-padding: 15;
-    -fx-border-color: #ccc;
-    -fx-border-radius: 8;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
 }
 
-.container {
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/*.container {
     -fx-background-color: #FFFFFF;
     -fx-padding: 20;
     -fx-spacing: 10;
@@ -15,6 +24,19 @@
     -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0.3, 0, 4);
 }
+*/
+
+/* 建議的統一值（概念） */
+--radius: 20;
+--shadow-default: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.3, 0, 4);
+--blue-primary: #03A9F4;
+--dark-bg: #2c2c2c;
+.root.dark-mode {
+    --bg: #2c2c2c;
+    --text: #e0e0e0;
+    --border: #555555;
+}
+
 
 .h4 {
     -fx-font-size: 18px;
@@ -120,11 +142,14 @@
 
 /* StatsPanel 樣式 */
 .stats-panel {
-    -fx-background-color: #fce4ec;
-    -fx-padding: 15;
-    -fx-border-color: #ec407a;
-    -fx-border-radius: 8;
+    -fx-background-color: rgba(227, 242, 253, 0.6); /* 淺藍透明感 */
+    -fx-padding: 20;
+    -fx-border-color: rgba(100, 181, 246, 0.3);    /* 淺藍邊框 */
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(100, 181, 246, 0.2), 10, 0.3, 0, 4);
 }
+
 
 /* ListView 任務卡片樣式 */
 .list-cell {
@@ -150,6 +175,7 @@
     -fx-base: #2c2c2c;
     -fx-background-color: #2c2c2c;
     -fx-text-fill: #e0e0e0;
+
 }
 
 /* 通用文字 */
@@ -159,15 +185,30 @@
 }
 
 /* Panel 類 */
-.root.dark-mode .task-panel,
-.root.dark-mode .calendar-panel,
-.root.dark-mode .stats-panel {
-    -fx-background-color: #2c2c2c;
-    -fx-border-color: #444444;
-    -fx-border-radius: 8;
-}
+..root.dark-mode .task-panel,
+ .root.dark-mode .calendar-panel {
+     -fx-background-color: linear-gradient(to bottom right, rgba(40, 40, 40, 0.6), rgba(30, 30, 30, 0.6));
+     -fx-background-radius: 20;
+     -fx-border-radius: 20;
+     -fx-border-color: rgba(255, 255, 255, 0.08);
+     -fx-border-width: 1.5;
+     -fx-padding: 20;
+     -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.05), 16, 0.3, 0, 4);
+ }
+
+
 
 /* ListView */
+.root.dark-mode .stats-panel {
+    -fx-background-color: linear-gradient(to bottom right, rgba(40, 40, 40, 0.6), rgba(30, 30, 30, 0.6));
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-width: 1.5;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.05), 16, 0.3, 0, 4);
+}
+
 .root.dark-mode .list-cell {
     -fx-background-color: #3a3a3a;
     -fx-border-color: #555555;
@@ -177,6 +218,17 @@
     -fx-background-color: #4a90e2;
     -fx-text-fill: #ffffff;
 }
+.stat-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #1565c0;
+    -fx-font-weight: bold;
+}
+.stat-value {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: linear-gradient(to right, #42a5f5, #478ed1);
+}
+
 
 /* 按鈕 */
 .root.dark-mode .button {
@@ -293,4 +345,82 @@
 }
 .fade-in.show {
     -fx-opacity: 1;
+}
+
+.button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.4, 0, 2);
+}
+.button:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+.container {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0.3, 0, 4);
+    -fx-border-color: rgba(255, 255, 255, 0.4);
+    -fx-border-width: 1;
+}
+
+
+.button-primary {
+    -fx-background-color: linear-gradient(to right, #42a5f5, #478ed1);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-padding: 10 18;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.2, 0, 2);
+    -fx-font-size: 14px;
+}
+.button-primary:hover {
+    -fx-background-color: linear-gradient(to right, #1e88e5, #1976d2);
+}
+
+
+.root {
+    -fx-background-color: linear-gradient(to bottom, #e3f2fd, #ffffff);
+}
+.root.dark-mode {
+    -fx-background-color: linear-gradient(to bottom, #212121, #2c2c2c);
+}
+
+/* ----------- Chart Panel 美化 ----------- */
+.chart {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0.3, 0, 4);
+}
+.chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #212121;
+}
+.axis-label, .chart-legend-item-symbol {
+    -fx-text-fill: #424242;
+}
+
+.root.dark-mode .chart {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-border-color: rgba(255, 255, 255, 0.08);
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0.3, 0, 4);
+}
+.root.dark-mode .chart-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+.root.dark-mode .axis-label,
+.root.dark-mode .chart-legend-item-symbol {
+    -fx-text-fill: #bbbbbb;
 }

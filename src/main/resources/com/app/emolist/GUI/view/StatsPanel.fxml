@@ -13,7 +13,8 @@
             stylesheets="@style.css">
     <VBox spacing="10" styleClass="stats-panel"
           AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+          AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"
+          VBox.vgrow="ALWAYS">
         <HBox alignment="CENTER_RIGHT">
             <ComboBox fx:id="viewRangeChoice" promptText="檢視範圍" onAction="#updateCharts">
                 <items>

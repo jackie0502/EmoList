@@ -2,17 +2,44 @@
 
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.fxml.FXMLLoader?>
+<?import javafx.scene.layout.VBox?>
 
-<SplitPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.app.emolist.GUI.MainController" dividerPositions="0.6">
+<?import javafx.scene.layout.HBox?>
+<SplitPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.app.emolist.GUI.MainController"
+           orientation="HORIZONTAL"
+           dividerPositions="0.4">
 
     <items>
+        <HBox>
+
+        <!-- 左側 TaskPanel -->
         <AnchorPane>
-            <fx:include fx:id="taskPanel" source="TaskPanel.fxml"/>
+            <VBox>
+            <fx:include fx:id="taskPanel" source="TaskPanel.fxml"
+                        AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                        AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
+            </VBox>
         </AnchorPane>
+
+        <!-- 右側 CalendarPanel + StatsPanel 垂直排列 -->
         <AnchorPane>
-            <fx:include fx:id="calendarPanel" source="CalendarPanel.fxml"/>
+            <VBox spacing="10"
+                  AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                  AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+                <!-- CalendarPanel 在上 -->
+                <fx:include fx:id="calendarPanel" source="CalendarPanel.fxml"
+                            VBox.vgrow="ALWAYS"/>
+
+                <!-- StatsPanel 在下 -->
+                <fx:include fx:id="statsPanel" source="StatsPanel.fxml"
+                            VBox.vgrow="ALWAYS"/>
+
+            </VBox>
         </AnchorPane>
+        </HBox>
+
     </items>
 </SplitPane>

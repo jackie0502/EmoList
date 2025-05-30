@@ -8,19 +8,21 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.app.emolist.GUI.TaskPanelController"
-            prefHeight="600.0" prefWidth="400.0">
+            prefHeight="600.0" prefWidth="500.0"
+            stylesheets="@style.css">
+    <VBox spacing="15" alignment="TOP_CENTER"
+          AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20"
+          styleClass="task-panel">
 
-    <VBox spacing="10" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
-
-        <!-- 分類分頁區 -->
-        <VBox spacing="10">
-            <HBox spacing="10">
+        <!-- 顯示分類的區塊 -->
+        <VBox spacing="10" alignment="CENTER_LEFT" styleClass="card">
+            <HBox spacing="10" alignment="CENTER_LEFT">
                 <HBox spacing="10" fx:id="categoryTabs" />
-                <Region fx:id="categorySpacer" HBox.hgrow="ALWAYS" />
-                <ComboBox fx:id="categoryDropdown" promptText="更多分類..." visible="false" />
+                <Region fx:id="categorySpacer" HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="categoryDropdown" promptText="更多分類..." visible="false"/>
                 <Button text="＋新增分類" onAction="#handleShowAddCategory" />
             </HBox>
-            <!-- 浮動新增分類區 -->
             <HBox spacing="10" fx:id="addCategoryBox" visible="false" managed="false">
                 <TextField fx:id="addCategoryField" promptText="輸入新分類..." />
                 <Button text="確認" onAction="#handleConfirmAddCategory" />
@@ -29,17 +31,23 @@
             </HBox>
         </VBox>
 
+        <!-- 搜尋欄 -->
+        <TextField fx:id="searchField" promptText="搜尋任務..." maxWidth="300"/>
 
-        <TextField fx:id="searchField" promptText="搜尋任務..." />
+        <!-- 未完成任務 -->
+        <VBox spacing="5" styleClass="card" alignment="CENTER">
+            <Label text="未完成任務" styleClass="section-title"/>
+            <ListView fx:id="uncompletedListView" maxHeight="150"/>
+        </VBox>
 
-        <Label text="未完成任務" />
-        <ListView fx:id="uncompletedListView" />
+        <!-- 已完成任務 -->
+        <VBox spacing="5" styleClass="card" alignment="CENTER">
+            <Label text="已完成任務" styleClass="section-title"/>
+            <ListView fx:id="completedListView" maxHeight="100"/>
+        </VBox>
 
-        <Label text="已完成任務" />
-        <ListView fx:id="completedListView" />
-
-        <!-- 新增任務按鈕 -->
-        <HBox spacing="10">
+        <!-- 操作按鈕 -->
+        <HBox spacing="10" alignment="CENTER">
             <Button text="＋新增任務" onAction="#handleShowTaskInput" />
             <Button text="刪除任務" onAction="#handleDeleteTask" />
             <Button text="完成任務" onAction="#handleCompleteSelectedTasks" />
@@ -47,27 +55,27 @@
             <Button fx:id="darkModeButton" text="深色模式" onAction="#toggleDarkMode" />
         </HBox>
 
-        <!-- 浮動新增任務區 -->
-        <VBox spacing="10" fx:id="taskInputBox" visible="false" managed="false">
-            <TextField fx:id="inputField" promptText="輸入任務..." />
-            <HBox spacing="10">
+        <!-- 任務輸入欄 -->
+        <VBox spacing="10" fx:id="taskInputBox" visible="false" managed="false"
+              styleClass="card" alignment="CENTER">
+            <TextField fx:id="inputField" promptText="輸入任務..." maxWidth="300"/>
+            <HBox spacing="10" alignment="CENTER">
                 <ComboBox fx:id="taskCategoryChoice" promptText="任務分類" />
                 <ComboBox fx:id="priorityChoice" promptText="Emo分數" />
                 <ComboBox fx:id="recurrenceChoice" promptText="週期" />
                 <DatePicker fx:id="deadlinePicker" promptText="截止日期" />
             </HBox>
-            <HBox spacing="10">
+            <HBox spacing="10" alignment="CENTER">
                 <Button text="確認新增" onAction="#handleAddTask" />
                 <Button text="取消" onAction="#handleCancelAddTask" />
                 <Button text="新增通知" onAction="#handleToggleNotificationButton" />
                 <Button text="清除日期" onAction="#handleClearDeadline" />
             </HBox>
+
+            <!-- 通知區塊 -->
             <VBox spacing="10" visible="false" fx:id="notificationBox" managed="false" alignment="CENTER_LEFT">
-                <!-- 啟用通知 CheckBox -->
                 <HBox spacing="10">
                     <CheckBox fx:id="enableNotificationCheckBox" text="啟用通知" onAction="#handleToggleEnableNotification" />
-
-                    <!-- 幾天前通知 -->
                     <Label text="通知時間：" />
                     <ComboBox fx:id="daysBeforeChoice" promptText="幾天前" prefWidth="80">
                         <items>
@@ -79,7 +87,6 @@
                         </items>
                     </ComboBox>
                 </HBox>
-                <!-- 自訂時間 -->
                 <HBox spacing="10">
                     <Label text="時間：" />
                     <Spinner fx:id="hourSpinner" prefWidth="60" editable="true">
@@ -95,8 +102,8 @@
                     </Spinner>
                 </HBox>
             </VBox>
-
         </VBox>
 
     </VBox>
 </AnchorPane>
+
