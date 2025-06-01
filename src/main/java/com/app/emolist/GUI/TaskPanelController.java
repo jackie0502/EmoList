@@ -97,7 +97,7 @@ public class TaskPanelController {
     }
 
     @FXML
-    private void handleCompleteSelectedTasks() {
+    public void handleCompleteSelectedTasks() {
         // ✅ 用 ArrayList 篩選出尚未完成的任務
         ArrayList<Task> incompleteTasks = new ArrayList<>();
         for (Task task : selectedTasks) {
