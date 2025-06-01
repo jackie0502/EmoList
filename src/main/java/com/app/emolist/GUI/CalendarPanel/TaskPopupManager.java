@@ -47,12 +47,9 @@ public class TaskPopupManager {
         } else {
             List<CheckBox> checkBoxes = new ArrayList<>();
             VBox taskListBox = new VBox(5);
-
             for (Task task : tasks) {
-                CheckBox cb = new CheckBox(task.getTitle() + " [" + task.getCategory() + "]");
-                cb.getStyleClass().add("form-check-input");
-                taskListBox.getChildren().add(cb);
-                checkBoxes.add(cb);
+                Label taskLabel = new Label(task.getTitle() + (!"無".equals(task.getCategory()) ? " [" + task.getCategory() + "]" : ""));
+                taskListBox.getChildren().add(taskLabel);
             }
 
             ScrollPane scrollPane = new ScrollPane(taskListBox);
@@ -60,10 +57,9 @@ public class TaskPopupManager {
             scrollPane.setFitToWidth(true);
             root.getChildren().add(scrollPane);
 
-            Button completeBtn = new Button("完成並關閉");
+            Button completeBtn = new Button("完成");
             completeBtn.setOnAction(e -> {
-                new TaskCompletionHandler(taskManager, taskPanelController)
-                        .completeTasks(tasks, checkBoxes, refreshCallback, stage);
+                stage.close();
             });
 
 
